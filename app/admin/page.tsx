@@ -185,11 +185,11 @@ export default function AdminDashboard() {
           ) : (
             students.map(([userId, student]) => (
               <div key={userId}>
-                <div className="px-6 py-4 flex items-center justify-between cursor-pointer transition-colors hover:opacity-80"
+                <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer transition-colors hover:opacity-80"
                   onClick={() => setExpandedStudent(expandedStudent === userId ? null : userId)}
                   style={{ background: expandedStudent === userId ? 'var(--bg-card-hover)' : 'transparent' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs"
+                    <div className="w-10 h-10 rounded-full flex shrink-0 items-center justify-center font-bold text-xs"
                       style={{ background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>
                       {student.name.substring(0, 2).toUpperCase()}
                     </div>
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
                       <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{student.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
                     <span className="text-sm font-bold" style={{ color: 'var(--accent)' }}>{student.xp} XP</span>
                     <span className="text-xs font-semibold px-2 py-1 rounded-lg" style={{
                       background: student.rows.filter(r => r.status === 'completed').length === 3 ? 'var(--success-bg)' : 'var(--warning-bg)',

@@ -114,9 +114,9 @@ export default function DashboardPage() {
             <div className="relative z-10">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div>
-                  <p className="text-indigo-200 text-sm font-semibold uppercase tracking-wider">Welcome back</p>
+                  <p className="text-indigo-200 text-xs sm:text-sm font-semibold uppercase tracking-wider">Welcome back</p>
                   <h1 className="text-3xl sm:text-4xl font-extrabold mt-1 font-heading">{user.name.split(' ')[0]}! 👋</h1>
-                  <p className="text-indigo-200 mt-2 max-w-md">
+                  <p className="text-indigo-200 mt-2 text-sm sm:text-base max-w-md">
                     {progressData.completed === progressData.total
                       ? 'Congratulations! You\'ve mastered all modules. You\'re an AI ethics champion!'
                       : `You're ${Math.round(progressData.percentage)}% through your journey. Keep going!`}
@@ -136,7 +136,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Quick stats */}
-              <div className="grid grid-cols-3 gap-3 mt-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
                 {[
                   { icon: Target, label: 'Completed', value: `${progressData.completed}/${progressData.total}` },
                   { icon: Flame, label: 'Streak', value: `${user.streak || 0} days` },

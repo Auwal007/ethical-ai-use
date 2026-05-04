@@ -5,6 +5,7 @@ import { useAuth } from './AuthProvider';
 import { useTheme } from './ui/ThemeProvider';
 import { LogOut, Shield, Sun, Moon, Menu, X, Zap, Flame } from 'lucide-react';
 import { useState } from 'react';
+import Image from 'next/image';
 
 function ThemeToggle() {
   const { theme, mounted, toggleTheme } = useTheme();
@@ -45,9 +46,7 @@ export default function Navbar() {
         }}
       >
         <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-          <div className="w-[42px] h-[42px] rounded flex items-center justify-center font-heading font-bold text-xl shadow-md" style={{ background: 'var(--green)', color: 'var(--gold)' }}>
-            A
-          </div>
+          <Image src="/ATBU%20LOGO.png" alt="ATBU Logo" width={42} height={42} className="object-contain" />
           <div className="text-base font-medium tracking-[0.03em] hidden sm:block">
             <span className="font-bold" style={{ color: 'var(--green)' }}>ATBU</span>
             <span className="mx-1" style={{ color: 'var(--brown)', opacity: 0.6 }}>|</span>
