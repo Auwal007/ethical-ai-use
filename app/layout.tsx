@@ -18,7 +18,22 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen font-sans flex flex-col" style={{ background: 'var(--bg-body)', color: 'var(--text-primary)' }}>
+      <head>
+        {/* Inline script to set theme before paint, preventing flash and hydration mismatch */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              var t = localStorage.getItem('theme');
+              if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+              } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+              }
+            } catch(e) {}
+          })();
+        ` }} />
+      </head>
+      <body className="min-h-screen font-sans flex flex-col" style={{ background: 'var(--bg-body)', color: 'var(--text-primary)' }} suppressHydrationWarning>
         <ThemeProvider>
           <ToastProvider>
             <AuthProvider>

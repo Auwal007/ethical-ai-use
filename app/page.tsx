@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, BrainCircuit, ShieldCheck, Search, Sparkles, Users, BookOpen, Award, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/components/AuthProvider';
 
 function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -22,6 +24,14 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
 }
 
 export default function HomePage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  // Redirect logged-in users to dashboard
+  useEffect(() => {
+    if (!loading && user) router.push('/dashboard');
+  }, [user, loading, router]);
+
   const features = [
     { icon: BrainCircuit, title: 'Algorithmic Bias', desc: 'Understand how AI systems inherit human biases and learn to critically evaluate their outputs.', color: 'from-violet-500 to-indigo-500', bg: 'var(--accent-bg)' },
     { icon: Search, title: 'Critical Evaluation', desc: 'Spot fake citations, AI hallucinations, and verify claims with hands-on detection exercises.', color: 'from-blue-500 to-cyan-500', bg: 'var(--success-bg)' },
@@ -184,7 +194,7 @@ export default function HomePage() {
             <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>ATBU Ethical AI Literacy System</span>
           </div>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-            © {new Date().getFullYear()} Abubakar Tafawa Balewa University. All rights reserved.
+            © 2026 Abubakar Tafawa Balewa University. All rights reserved.
           </p>
         </div>
       </footer>
