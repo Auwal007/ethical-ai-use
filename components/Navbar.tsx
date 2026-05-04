@@ -6,103 +6,119 @@ import { useTheme } from './ui/ThemeProvider';
 import { LogOut, Shield, Sun, Moon, Menu, X, Zap, Flame } from 'lucide-react';
 import { useState } from 'react';
 
+function ThemeToggle() {
+  const { theme, mounted, toggleTheme } = useTheme();
+
+  if (!mounted) {
+    return (
+      <button
+        className="w-9 h-9 rounded flex items-center justify-center transition-all"
+        style={{ background: 'transparent', border: '1px solid var(--border-color)' }}
+        aria-label="Toggle theme"
+      />
+    );
+  }
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="w-9 h-9 rounded flex items-center justify-center transition-all hover:-translate-y-0.5"
+      style={{ background: 'transparent', border: '1px solid var(--border-color)' }}
+      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+    >
+      {theme === 'light' ? <Moon className="h-4 w-4" style={{ color: 'var(--text-secondary)' }} /> : <Sun className="h-4 w-4" style={{ color: 'var(--gold)' }} />}
+    </button>
+  );
+}
+
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <>
       <nav
-        className="h-16 px-4 sm:px-8 flex items-center justify-between shrink-0 w-full sticky top-0 z-50 backdrop-blur-xl"
+        className="h-20 px-6 lg:px-12 flex items-center justify-between shrink-0 w-full sticky top-0 z-50 backdrop-blur-md"
         style={{
           background: 'var(--nav-bg)',
-          borderBottom: '1px solid var(--nav-border)',
+          borderBottom: '1px solid var(--border-color)',
         }}
       >
-        <div className="flex items-center space-x-3">
-          <Link href={user ? '/dashboard' : '/'} className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md group-hover:scale-105 transition-transform">
-              A
-            </div>
-            <span className="text-lg font-bold tracking-tight hidden sm:block font-heading" style={{ color: 'var(--text-primary)' }}>
-              ATBU <span className="font-normal" style={{ color: 'var(--text-muted)' }}>| AI Literacy</span>
-            </span>
-          </Link>
-        </div>
+        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
+          <div className="w-[42px] h-[42px] rounded flex items-center justify-center font-heading font-bold text-xl shadow-md" style={{ background: 'var(--green)', color: 'var(--gold)' }}>
+            A
+          </div>
+          <div className="text-base font-medium tracking-[0.03em] hidden sm:block">
+            <span className="font-bold" style={{ color: 'var(--green)' }}>ATBU</span>
+            <span className="mx-1" style={{ color: 'var(--brown)', opacity: 0.6 }}>|</span>
+            <span style={{ color: 'var(--text-primary)' }}>AI Literacy</span>
+          </div>
+        </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center space-x-4">
-          {user && (
+        <div className="hidden md:flex items-center gap-10">
+          {!user ? (
             <>
+              <div className="flex items-center gap-10">
+                <Link href="/#modules" className="text-sm font-medium transition-colors hover:text-green-800" style={{ color: 'var(--brown)' }}>Learning Modules</Link>
+                <Link href="/#features" className="text-sm font-medium transition-colors hover:text-green-800" style={{ color: 'var(--brown)' }}>Platform Features</Link>
+              </div>
+              <div className="flex items-center gap-4 pl-10 border-l" style={{ borderColor: 'var(--border-color)' }}>
+                <ThemeToggle />
+                <Link href="/login" className="btn-primary !py-2.5 !px-6 text-sm shadow-sm hover:shadow-md">
+                  Login &rarr;
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center gap-4">
               {/* Streak badge */}
-              {user.streak > 0 && (
-                <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold" style={{ background: 'var(--warning-bg)', color: 'var(--warning-text)' }}>
+              {(user.streak ?? 0) > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold border" style={{ background: 'var(--warning-bg)', color: 'var(--warning-text)', borderColor: 'rgba(184,150,12,0.3)' }}>
                   <Flame className="h-3.5 w-3.5" />
                   <span>{user.streak} day streak</span>
                 </div>
               )}
               {/* XP badge */}
-              <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold" style={{ background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold border" style={{ background: 'var(--success-bg)', color: 'var(--success-text)', borderColor: 'rgba(26,92,42,0.3)' }}>
                 <Zap className="h-3.5 w-3.5" />
-                <span>{user.xp || 0} XP</span>
+                <span>{user.xp ?? 0} XP</span>
               </div>
-            </>
-          )}
 
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
-            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? <Moon className="h-4 w-4" style={{ color: 'var(--text-secondary)' }} /> : <Sun className="h-4 w-4 text-amber-400" />}
-          </button>
+              <ThemeToggle />
 
-          {user ? (
-            <div className="flex items-center space-x-4 pl-4" style={{ borderLeft: '1px solid var(--border-color)' }}>
-              {user.role === 'admin' && (
-                <Link href="/admin" className="flex items-center space-x-1 text-sm font-bold transition" style={{ color: 'var(--text-secondary)' }}>
-                  <Shield className="h-4 w-4" />
-                  <span>Admin</span>
-                </Link>
-              )}
-              <div className="text-right">
-                <p className="text-sm font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>{user.name}</p>
-                <p className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>{user.level?.name || user.role}</p>
+              <div className="flex items-center gap-4 pl-4 border-l" style={{ borderColor: 'var(--border-color)' }}>
+                {user.role === 'admin' && (
+                  <Link href="/admin" className="flex items-center gap-1.5 text-sm font-bold transition-colors hover:opacity-80" style={{ color: 'var(--text-secondary)' }}>
+                    <Shield className="h-4 w-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
+                <div className="text-right">
+                  <p className="text-sm font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>{user.name}</p>
+                  <p className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>{user.level?.name || user.role}</p>
+                </div>
+                <div
+                  className="w-10 h-10 rounded flex items-center justify-center font-bold text-sm shadow-sm"
+                  style={{ background: 'var(--success-bg)', color: 'var(--success-text)', border: '1.5px solid var(--success)' }}
+                >
+                  {user.name.substring(0, 2).toUpperCase()}
+                </div>
+                <button onClick={logout} className="transition-colors hover:text-red-500" style={{ color: 'var(--text-muted)' }} title="Logout">
+                  <LogOut className="h-5 w-5" />
+                </button>
               </div>
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm"
-                style={{ background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '2px solid var(--accent-glow)' }}
-              >
-                {user.name.substring(0, 2).toUpperCase()}
-              </div>
-              <button onClick={logout} className="transition-colors hover:text-red-500" style={{ color: 'var(--text-muted)' }} title="Logout">
-                <LogOut className="h-5 w-5" />
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center space-x-3">
-              <Link href="/login" className="text-sm font-bold transition hover:opacity-80" style={{ color: 'var(--text-secondary)' }}>Log in</Link>
-              <Link href="/register" className="btn-primary text-sm !py-2 !px-5">Get Started</Link>
             </div>
           )}
         </div>
 
         {/* Mobile menu button */}
-        <div className="flex md:hidden items-center space-x-2">
-          <button
-            onClick={toggleTheme}
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
-          >
-            {theme === 'light' ? <Moon className="h-4 w-4" style={{ color: 'var(--text-secondary)' }} /> : <Sun className="h-4 w-4 text-amber-400" />}
-          </button>
+        <div className="flex md:hidden items-center gap-3">
+          <ThemeToggle />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+            className="w-9 h-9 rounded flex items-center justify-center"
+            style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -112,39 +128,39 @@ export default function Navbar() {
       {/* Mobile dropdown */}
       {mobileOpen && (
         <div
-          className="md:hidden fixed inset-x-0 top-16 z-40 p-4 animate-slide-down"
+          className="md:hidden fixed inset-x-0 top-20 z-40 p-5 shadow-lg animate-slide-down"
           style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border-color)' }}
         >
           {user ? (
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 rounded-2xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm" style={{ background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-4 rounded border" style={{ background: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+                <div className="w-10 h-10 rounded flex items-center justify-center font-bold text-sm" style={{ background: 'var(--success-bg)', color: 'var(--success-text)' }}>
                   {user.name.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
                   <p className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{user.name}</p>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{user.level?.name} • {user.xp || 0} XP</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{user.level?.name} • {user.xp ?? 0} XP</p>
                 </div>
               </div>
-              <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="block p-3 rounded-xl font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
+              <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="block p-3 rounded font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
                 Dashboard
               </Link>
               {user.role === 'admin' && (
-                <Link href="/admin" onClick={() => setMobileOpen(false)} className="block p-3 rounded-xl font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
+                <Link href="/admin" onClick={() => setMobileOpen(false)} className="block p-3 rounded font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
                   Admin Panel
                 </Link>
               )}
-              <button onClick={logout} className="w-full text-left p-3 rounded-xl font-medium text-sm text-red-500">
+              <button onClick={logout} className="w-full text-left p-3 rounded font-medium text-sm text-red-500">
                 Log Out
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
-              <Link href="/login" onClick={() => setMobileOpen(false)} className="block p-3 rounded-xl font-medium text-sm text-center" style={{ color: 'var(--text-primary)', background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-                Log In
-              </Link>
-              <Link href="/register" onClick={() => setMobileOpen(false)} className="block btn-primary text-sm text-center">
-                Get Started
+            <div className="space-y-4">
+              <Link href="/#modules" onClick={() => setMobileOpen(false)} className="block p-3 font-medium text-sm hover:bg-gray-50" style={{ color: 'var(--text-primary)' }}>Learning Modules</Link>
+              <Link href="/#features" onClick={() => setMobileOpen(false)} className="block p-3 font-medium text-sm hover:bg-gray-50" style={{ color: 'var(--text-primary)' }}>Platform Features</Link>
+              
+              <Link href="/login" onClick={() => setMobileOpen(false)} className="block btn-primary text-sm text-center w-full !py-3">
+                Login
               </Link>
             </div>
           )}

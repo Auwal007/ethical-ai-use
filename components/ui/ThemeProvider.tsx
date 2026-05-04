@@ -6,22 +6,29 @@ type Theme = 'light' | 'dark';
 
 interface ThemeContextType {
   theme: Theme;
+  mounted: boolean;
   toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
+  mounted: false,
   toggleTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Read initial theme from the attribute already set by the inline script
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof document !== 'undefined') {
-      return (document.documentElement.getAttribute('data-theme') as Theme) || 'light';
+  // Always start with 'light' to match server render
+  const [theme, setTheme] = useState<Theme>('light');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // After mount, sync with the attribute set by the inline script
+    const current = document.documentElement.getAttribute('data-theme') as Theme;
+    if (current && current !== theme) {
+      setTheme(current);
     }
-    return 'light';
-  });
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
@@ -31,7 +38,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, mounted, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -4,10 +4,10 @@ import { AuthProvider } from '@/components/AuthProvider';
 import Navbar from '@/components/Navbar';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import { ToastProvider } from '@/components/ui/Toast';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { DM_Sans, Playfair_Display } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
+const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'], variable: '--font-dm-sans' });
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['700'], style: ['normal', 'italic'], variable: '--font-playfair' });
 
 export const metadata: Metadata = {
   title: 'ATBU | Ethical AI Literacy System',
@@ -17,9 +17,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${dmSans.variable} ${playfair.variable}`} suppressHydrationWarning>
       <head>
-        {/* Inline script to set theme before paint, preventing flash and hydration mismatch */}
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
@@ -38,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToastProvider>
             <AuthProvider>
               <Navbar />
-              <main className="flex-grow">
+              <main className="flex-grow flex flex-col relative">
                 {children}
               </main>
             </AuthProvider>
