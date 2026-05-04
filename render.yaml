@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ethical-ai-system
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 18.18.0
+      - key: DB_PATH
+        value: /data/mvp.db

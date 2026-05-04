@@ -1,8 +1,16 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import fs from 'fs';
 
-// For MVP, we use a local SQLite database file in the project root.
-const dbPath = path.join(process.cwd(), 'mvp.db');
+// Check if a specific DB_PATH is provided (e.g., for Render deployment with a persistent disk)
+const dbPath = process.env.DB_PATH || path.join(process.cwd(), 'mvp.db');
+
+// Ensure the directory exists if it's not the root directory
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
 const db = new Database(dbPath);
 
 db.pragma('journal_mode = WAL');
