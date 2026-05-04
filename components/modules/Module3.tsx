@@ -53,7 +53,7 @@ export default function Module3({ onComplete }: { onComplete: (score: number) =>
   ];
   const currentIndex = stepLabels.findIndex(s => s.key === step);
 
-  const totalScore = selectedChoices.reduce((sum, choice, i) => {
+  const totalScore = selectedChoices.reduce<number>((sum, choice, i) => {
     if (choice !== null) return sum + scenarios[i].choices[choice].score;
     return sum;
   }, 0);
