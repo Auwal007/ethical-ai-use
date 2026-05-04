@@ -2,27 +2,34 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 import Navbar from '@/components/Navbar';
-import { Inter } from 'next/font/google';
+import { ThemeProvider } from '@/components/ui/ThemeProvider';
+import { ToastProvider } from '@/components/ui/Toast';
+import { Inter, Space_Grotesk } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
 
 export const metadata: Metadata = {
-  title: 'ATBU | Ethical AI Literacy',
-  description: 'Learn to use AI tools ethically and critically.',
+  title: 'ATBU | Ethical AI Literacy System',
+  description: 'An interactive learning platform teaching university students to use AI tools ethically, critically, and responsibly.',
+  keywords: ['AI ethics', 'ethical AI', 'university', 'ATBU', 'AI literacy', 'education'],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body suppressHydrationWarning className="min-h-screen bg-[#f8fafc] text-[#1e293b] font-sans flex flex-col">
-        <AuthProvider>
-          <Navbar />
-          <main className="flex-grow p-4 sm:p-8 max-w-7xl mx-auto w-full">
-            {children}
-          </main>
-        </AuthProvider>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen font-sans flex flex-col" style={{ background: 'var(--bg-body)', color: 'var(--text-primary)' }}>
+        <ThemeProvider>
+          <ToastProvider>
+            <AuthProvider>
+              <Navbar />
+              <main className="flex-grow">
+                {children}
+              </main>
+            </AuthProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-

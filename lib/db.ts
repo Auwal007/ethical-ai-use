@@ -14,7 +14,11 @@ db.exec(`
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role TEXT DEFAULT 'student'
+    role TEXT DEFAULT 'student',
+    xp INTEGER DEFAULT 0,
+    current_streak INTEGER DEFAULT 0,
+    last_active_date TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
   CREATE TABLE IF NOT EXISTS modules (
@@ -35,6 +39,20 @@ db.exec(`
     UNIQUE(user_id, module_id)
   );
 `);
+
+// Safely add new columns to existing databases (won't error if already exists)
+const addColumnSafe = (table: string, column: string, type: string) => {
+  try {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+  } catch {
+    // Column already exists, ignore
+  }
+};
+
+addColumnSafe('users', 'xp', 'INTEGER DEFAULT 0');
+addColumnSafe('users', 'current_streak', 'INTEGER DEFAULT 0');
+addColumnSafe('users', 'last_active_date', 'TEXT');
+addColumnSafe('users', 'created_at', 'DATETIME DEFAULT CURRENT_TIMESTAMP');
 
 // Seed initial modules if empty
 const countStmt = db.prepare('SELECT COUNT(*) as count FROM modules');

@@ -2,11 +2,20 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+type Level = {
+  name: string;
+  number: number;
+  nextXp: number;
+};
+
 type User = {
   id: number;
   name: string;
   email: string;
   role: string;
+  xp: number;
+  streak: number;
+  level: Level;
 };
 
 interface AuthContextType {
