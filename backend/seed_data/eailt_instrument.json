@@ -1,0 +1,335 @@
+{
+  "instrument": "Ethical AI Literacy Test (EAILT)",
+  "version": "1.0",
+  "adapted_from": [
+    "Ng, D. T. K., Wu, W., Leung, J. K. L., Chiu, T. K. F., & Chu, S. K. W. (2024). AI Literacy Questionnaire (AILQ), ABCE framework.",
+    "Wang, X., Chai, C. S., Li, Y., & Lee, V. (2025). AI Ethical Reflection Scale (AIERS)."
+  ],
+  "administration": "Identical item set administered as pre-test (O1) and post-test (O2). No feedback returned to participants on either administration.",
+  "structure": {
+    "total_items": 24,
+    "mcq_items": 18,
+    "likert_items": 6,
+    "dimensions": 6,
+    "items_per_dimension": 4,
+    "composition_per_dimension": "3 MCQ knowledge items + 1 Likert reflective item",
+    "mcq_scoring": "1 point for correct answer, 0 otherwise. Maximum knowledge score = 18.",
+    "likert_scoring": "5-point scale, item score equals selected value (1-5). Maximum reflective score = 30.",
+    "likert_anchors": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]
+  },
+  "note_on_analysis": "The 18 MCQ items constitute the objectively scored knowledge component analysed by the paired-samples t-test (Research Question 4); maximum score 18. The 6 Likert items, adapted from AIERS, measure self-reported ethical reflection and contribute to the dimensional profile; maximum score 30. Every dimension is measured by exactly 3 MCQ items and 1 Likert item, so dimension-level scores are directly comparable across the six dimensions. Knowledge and reflective scores are reported as separate columns in the CSV export and are not summed into a single composite.",
+
+  "items": [
+    {
+      "question_order": 1,
+      "dimension": "ethical_awareness",
+      "question_type": "mcq",
+      "question_text": "Which of the following best describes what it means for an artificial intelligence system to behave ethically?",
+      "options": [
+        "The system produces answers quickly and at low cost",
+        "The system operates in ways that are fair, transparent, and accountable to the people it affects",
+        "The system is built by a well-known technology company",
+        "The system never makes any mistakes"
+      ],
+      "correct_answer": "The system operates in ways that are fair, transparent, and accountable to the people it affects",
+      "source_basis": "AILQ ethical dimension; Floridi et al. (2018) explicability principle"
+    },
+    {
+      "question_order": 2,
+      "dimension": "ethical_awareness",
+      "question_type": "mcq",
+      "question_text": "A university adopts an AI system to shortlist scholarship applicants. Which question is the MOST important ethical question to ask before deployment?",
+      "options": [
+        "How much money will the system save the university?",
+        "How fast can the system process applications?",
+        "Who is affected by the system's decisions, and can those decisions be explained and challenged?",
+        "Which programming language was used to build the system?"
+      ],
+      "correct_answer": "Who is affected by the system's decisions, and can those decisions be explained and challenged?",
+      "source_basis": "Jobin et al. (2019); Heptagon Ethical Awareness and Reasoning"
+    },
+    {
+      "question_order": 3,
+      "dimension": "ethical_awareness",
+      "question_type": "mcq",
+      "question_text": "Artificial intelligence systems learn patterns from data. What does this fact most directly imply about their behaviour?",
+      "options": [
+        "They are neutral because computers cannot hold opinions",
+        "They can reproduce and amplify the patterns, including unfair ones, that exist in the data they were trained on",
+        "They always improve over time without human involvement",
+        "They understand the meaning of the data in the same way a human does"
+      ],
+      "correct_answer": "They can reproduce and amplify the patterns, including unfair ones, that exist in the data they were trained on",
+      "source_basis": "O'Neil (2016); Barocas & Selbst (2016)"
+    },
+    {
+      "question_order": 4,
+      "dimension": "ethical_awareness",
+      "question_type": "likert",
+      "question_text": "I consider the ethical implications of an AI tool before I use it for my academic work.",
+      "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+      "correct_answer": null,
+      "source_basis": "AIERS: AI ethical awareness dimension"
+    },
+
+    {
+      "question_order": 5,
+      "dimension": "critical_evaluation",
+      "question_type": "mcq",
+      "question_text": "A generative AI chatbot confidently gives you a citation for a journal article. What is the most appropriate next step?",
+      "options": [
+        "Use the citation immediately, since the AI stated it confidently",
+        "Verify that the article exists and says what the AI claims before citing it",
+        "Ask the AI whether it is certain about the citation",
+        "Rephrase the citation so that it cannot be traced"
+      ],
+      "correct_answer": "Verify that the article exists and says what the AI claims before citing it",
+      "source_basis": "Zhou & Schofield (2024) on AI hallucinations"
+    },
+    {
+      "question_order": 6,
+      "dimension": "critical_evaluation",
+      "question_type": "mcq",
+      "question_text": "The term 'AI hallucination' refers to which of the following?",
+      "options": [
+        "A visual error in an AI-generated image",
+        "An AI system producing information that is fluent and plausible but factually false",
+        "An AI system refusing to answer a question",
+        "A temporary failure of the internet connection to an AI service"
+      ],
+      "correct_answer": "An AI system producing information that is fluent and plausible but factually false",
+      "source_basis": "Zhou & Schofield (2024)"
+    },
+    {
+      "question_order": 7,
+      "dimension": "critical_evaluation",
+      "question_type": "mcq",
+      "question_text": "Two AI tools give you contradictory answers to the same question about Nigerian company law. What does this most reasonably indicate?",
+      "options": [
+        "One of the tools is broken and should never be used again",
+        "AI outputs require independent verification against authoritative sources, because such systems can be confidently wrong",
+        "The more expensive tool is correct",
+        "Nigerian company law is too complex for anyone to understand"
+      ],
+      "correct_answer": "AI outputs require independent verification against authoritative sources, because such systems can be confidently wrong",
+      "source_basis": "AIERS: AI critical evaluation dimension"
+    },
+    {
+      "question_order": 8,
+      "dimension": "critical_evaluation",
+      "question_type": "likert",
+      "question_text": "I critically evaluate the information an AI tool gives me rather than accepting it at face value.",
+      "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+      "correct_answer": null,
+      "source_basis": "AIERS: AI critical evaluation dimension"
+    },
+
+    {
+      "question_order": 9,
+      "dimension": "bias_recognition",
+      "question_type": "mcq",
+      "question_text": "An AI recruitment tool is trained on ten years of a company's past hiring decisions, during which very few women were hired for technical roles. What is the most likely outcome?",
+      "options": [
+        "The tool will correct the imbalance because it is objective",
+        "The tool will learn to rank male applicants more favourably, reproducing the historical pattern",
+        "The tool will refuse to make recommendations",
+        "The tool will hire only women to compensate"
+      ],
+      "correct_answer": "The tool will learn to rank male applicants more favourably, reproducing the historical pattern",
+      "source_basis": "O'Neil (2016); Barocas & Selbst (2016)"
+    },
+    {
+      "question_order": 10,
+      "dimension": "bias_recognition",
+      "question_type": "mcq",
+      "question_text": "A speech-recognition system performs poorly for speakers of Nigerian English and Nigerian languages. What is the most probable technical cause?",
+      "options": [
+        "Nigerian speakers do not pronounce words correctly",
+        "The training data under-represents Nigerian speakers and languages",
+        "The system was designed to exclude Nigerian users",
+        "Speech recognition cannot work in Africa"
+      ],
+      "correct_answer": "The training data under-represents Nigerian speakers and languages",
+      "source_basis": "Oyelere et al. (2022); Nigeria AI-in-Education framework on linguistic under-representation"
+    },
+    {
+      "question_order": 11,
+      "dimension": "bias_recognition",
+      "question_type": "mcq",
+      "question_text": "Which action is MOST likely to reduce bias in an AI system?",
+      "options": [
+        "Increasing the amount of computing power used to train it",
+        "Using training data that is diverse and representative of all groups the system will affect",
+        "Hiding the system's decision rules so they cannot be criticised",
+        "Making the system respond faster"
+      ],
+      "correct_answer": "Using training data that is diverse and representative of all groups the system will affect",
+      "source_basis": "Leong & Zhang (2025)"
+    },
+    {
+      "question_order": 12,
+      "dimension": "bias_recognition",
+      "question_type": "likert",
+      "question_text": "I can recognise when an AI system's output may be unfair or biased against a particular group of people.",
+      "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+      "correct_answer": null,
+      "source_basis": "AILQ ethical dimension; AI4K12 Big Idea 5"
+    },
+
+    {
+      "question_order": 13,
+      "dimension": "privacy_accountability",
+      "question_type": "mcq",
+      "question_text": "Under the Nigeria Data Protection Act 2023, which principle requires that only the personal data actually needed for a stated purpose should be collected?",
+      "options": [
+        "Data maximisation",
+        "Data minimisation",
+        "Data monetisation",
+        "Data replication"
+      ],
+      "correct_answer": "Data minimisation",
+      "source_basis": "NDPA 2023 (FMIST, 2024); Nigeria AI-in-Education framework"
+    },
+    {
+      "question_order": 14,
+      "dimension": "privacy_accountability",
+      "question_type": "mcq",
+      "question_text": "You paste a classmate's unpublished draft into a public AI chatbot to help summarise it. What is the primary ethical problem?",
+      "options": [
+        "The chatbot may summarise it poorly",
+        "You have disclosed another person's information to a third party without their consent",
+        "It will take too long to process",
+        "There is no problem, because the draft is only coursework"
+      ],
+      "correct_answer": "You have disclosed another person's information to a third party without their consent",
+      "source_basis": "Zuboff (2019); Jobin et al. (2019) privacy-by-design"
+    },
+    {
+      "question_order": 15,
+      "dimension": "privacy_accountability",
+      "question_type": "mcq",
+      "question_text": "An AI system used by a hospital makes a harmful recommendation. Which statement best reflects responsible accountability?",
+      "options": [
+        "No one is responsible, because the system learned on its own",
+        "The person who wrote the original code is solely responsible",
+        "Human actors who deploy and oversee the system remain legally and ethically accountable for it",
+        "The patient is responsible for trusting the system"
+      ],
+      "correct_answer": "Human actors who deploy and oversee the system remain legally and ethically accountable for it",
+      "source_basis": "Matthias (2004) accountability gap; Jobin et al. (2019)"
+    },
+    {
+      "question_order": 16,
+      "dimension": "privacy_accountability",
+      "question_type": "likert",
+      "question_text": "I am careful about the personal information I share with AI tools.",
+      "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+      "correct_answer": null,
+      "source_basis": "AILQ ethical dimension; NDPA 2023 data subject rights"
+    },
+
+    {
+      "question_order": 17,
+      "dimension": "responsible_use",
+      "question_type": "mcq",
+      "question_text": "Which use of a generative AI tool is most consistent with academic integrity?",
+      "options": [
+        "Submitting an AI-generated essay as your own original work",
+        "Using AI to explain a concept you find difficult, then writing the work yourself",
+        "Paying someone to run AI tools on your behalf",
+        "Using AI during an examination without permission"
+      ],
+      "correct_answer": "Using AI to explain a concept you find difficult, then writing the work yourself",
+      "source_basis": "Crompton et al. (2026); Zhou & Schofield (2024) co-created guidelines"
+    },
+    {
+      "question_order": 18,
+      "dimension": "responsible_use",
+      "question_type": "mcq",
+      "question_text": "The term 'cognitive offloading' in the context of AI use describes which of the following?",
+      "options": [
+        "Transferring files from a computer to the cloud",
+        "Delegating thinking tasks to a machine to the point that one's own reasoning skills are not developed",
+        "Reducing the memory usage of an application",
+        "Sharing an assignment among several students"
+      ],
+      "correct_answer": "Delegating thinking tasks to a machine to the point that one's own reasoning skills are not developed",
+      "source_basis": "Mathew & Isaac (2025)"
+    },
+    {
+      "question_order": 19,
+      "dimension": "responsible_use",
+      "question_type": "mcq",
+      "question_text": "Your department has no written policy on AI use in assignments. What is the most responsible course of action?",
+      "options": [
+        "Assume all AI use is permitted, since nothing is prohibited",
+        "Assume all AI use is forbidden and never use any tool",
+        "Ask your lecturer for guidance and disclose how you used AI in your work",
+        "Use AI and simply avoid mentioning it"
+      ],
+      "correct_answer": "Ask your lecturer for guidance and disclose how you used AI in your work",
+      "source_basis": "Crompton et al. (2026) on educational rather than punitive integrity strategies"
+    },
+    {
+      "question_order": 20,
+      "dimension": "responsible_use",
+      "question_type": "likert",
+      "question_text": "I use AI tools in ways that support my learning rather than replace it.",
+      "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+      "correct_answer": null,
+      "source_basis": "AILQ behavioural dimension; Mathew & Isaac (2025)"
+    },
+
+    {
+      "question_order": 21,
+      "dimension": "ai_social_good",
+      "question_type": "mcq",
+      "question_text": "Which of the following best describes a 'human-centred' approach to artificial intelligence?",
+      "options": [
+        "AI systems should replace human workers wherever possible to increase efficiency",
+        "AI systems should be designed to serve human wellbeing, preserve human agency, and remain under human oversight",
+        "AI systems should be designed only by humans, not by other AI systems",
+        "AI systems should imitate human appearance as closely as possible"
+      ],
+      "correct_answer": "AI systems should be designed to serve human wellbeing, preserve human agency, and remain under human oversight",
+      "source_basis": "UNESCO human-centred mindset (Miao & Cukurova, 2024)"
+    },
+    {
+      "question_order": 22,
+      "dimension": "ai_social_good",
+      "question_type": "mcq",
+      "question_text": "Most AI applications used in Africa are developed elsewhere. According to the literature, what is the principal risk this creates for African users?",
+      "options": [
+        "The applications will be too expensive to run",
+        "The applications lack contextual relevance to local languages, cultures, and infrastructure, which can exclude local users",
+        "The applications will only work in English",
+        "The applications will run more slowly on African networks"
+      ],
+      "correct_answer": "The applications lack contextual relevance to local languages, cultures, and infrastructure, which can exclude local users",
+      "source_basis": "Oyelere et al. (2022); Adetula (2024)"
+    },
+    {
+      "question_order": 23,
+      "dimension": "ai_social_good",
+      "question_type": "mcq",
+      "question_text": "A student develops an AI tool to help farmers in her community identify crop disease from photographs. Which design decision best reflects a commitment to AI for social good?",
+      "options": [
+        "Making the tool available only to farmers who can afford a subscription",
+        "Ensuring the tool works on low-end phones and poor network connections, and testing it with local crops",
+        "Collecting as much farmer data as possible for future commercial use",
+        "Keeping the tool's error rate secret so that farmers continue to trust it"
+      ],
+      "correct_answer": "Ensuring the tool works on low-end phones and poor network connections, and testing it with local crops",
+      "source_basis": "AIERS: AI for social good dimension; Adetula (2024) infrastructural realities"
+    },
+    {
+      "question_order": 24,
+      "dimension": "ai_social_good",
+      "question_type": "likert",
+      "question_text": "I believe I have a responsibility to consider how AI can be used to benefit my community and society.",
+      "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+      "correct_answer": null,
+      "source_basis": "AIERS: AI for social good dimension"
+    }
+  ]
+}

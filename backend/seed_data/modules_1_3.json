@@ -1,0 +1,391 @@
+{
+  "_meta": {
+    "title": "Ethical AI Literacy System — Module Content (Modules 1-3)",
+    "version": "1.0",
+    "note": "Lesson pages are markdown. Scenarios support branching: a scenario with depends_on_choice only becomes visible if the student previously selected that specific option.",
+    "dimensions": ["ethical_awareness", "critical_evaluation", "bias_recognition", "privacy_accountability", "responsible_use", "ai_social_good"]
+  },
+
+  "modules": [
+    {
+      "sequence_no": 1,
+      "title": "Understanding Artificial Intelligence",
+      "summary": "What AI actually is, how it learns from data, and why that mechanism makes ethics unavoidable rather than optional.",
+      "reflection_prompt": "Describe one way you have used an AI tool in the past month. What did you assume about how it produced its answer, and has that assumption changed?",
+      "pages": [
+        {
+          "page_order": 1,
+          "title": "What Artificial Intelligence Is",
+          "body": "Artificial intelligence refers to computer systems that perform tasks we normally associate with human intelligence: recognising a face, translating a sentence, recommending a video, or drafting a paragraph.\n\nIt is tempting to imagine such systems as thinking machines. They are not. A modern AI system is a **statistical pattern-finder**. It is shown enormous quantities of examples, and it learns which patterns tend to follow which other patterns. When you ask a chatbot a question, it is not consulting a store of facts and reasoning about them. It is predicting, token by token, what text is most likely to follow your question, based on the patterns in everything it was trained on.\n\nThis distinction is not academic pedantry. It is the single most important thing to understand about AI, because almost every ethical problem in this course follows directly from it."
+        },
+        {
+          "page_order": 2,
+          "title": "How Machines Learn From Data",
+          "body": "Machine learning, the dominant approach in modern AI, works roughly like this:\n\n1. **Collect data.** Thousands or millions of examples — photographs, sentences, hiring decisions, medical records.\n2. **Train a model.** An algorithm adjusts millions of internal numbers until the model reliably reproduces the patterns in that data.\n3. **Deploy.** The trained model is given new inputs it has never seen and produces outputs based on the patterns it absorbed.\n\nNotice what is missing from that list. Nowhere does the machine ask whether the data was fair, whether the patterns it found are just, or whether the people affected by its outputs consented to any of it.\n\nA model trained on data reproduces that data's world — including its inequalities. If a company hired mostly men for engineering roles for ten years, a model trained on those decisions learns that pattern and repeats it. The model is not malicious. It is doing exactly what it was built to do."
+        },
+        {
+          "page_order": 3,
+          "title": "Why Ethics Is Not an Add-On",
+          "body": "People often speak of \"adding ethics\" to AI, as though ethics were a feature to be installed after the system works.\n\nThe literature suggests otherwise. Because an AI system's behaviour is inherited from its data and its design choices, the ethical character of the system is decided *before it is ever switched on*. Who was in the training data and who was left out. What the system was optimised for. Whether anyone can inspect its decisions. Who is answerable when it causes harm.\n\nThere are two broad schools of thought on how to respond. Some researchers argue that fairness and privacy can be defined mathematically and built directly into the algorithm — fixing the technology from the inside. Others argue that no equation can settle a moral question, and that what is needed is external governance: audits, institutional oversight, and law.\n\nBoth are right about something. The rest of this course assumes you will need to reason with both."
+        },
+        {
+          "page_order": 4,
+          "title": "Why This Matters Here",
+          "body": "Almost every AI system in daily use across Nigeria was designed somewhere else, trained on data collected somewhere else, and tested on people who live somewhere else.\n\nThis has consequences that are easy to overlook. A speech system that struggles with Nigerian English is not a neutral tool that some users happen to find inconvenient; it is a system whose training data decided, in advance, whose voices count. A model that has read very little Hausa, Yoruba, or Igbo will confidently produce nonsense in those languages while sounding authoritative.\n\nYou are not merely a user of these systems. As a graduate, you will be among the people who choose whether to adopt them, how to deploy them, and whether to build alternatives. The competence this course aims to build is not the ability to code a model. It is the ability to ask the right question before the model is switched on."
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_order": 1,
+          "depends_on": null,
+          "situation_text": "A friend shows you a new AI study app. It answers any coursework question instantly and explains its reasoning in confident, fluent paragraphs. She tells you it has never been wrong. You try it on a topic you already know well, and notice that one of its explanations contains a subtle but definite error.\n\nWhat do you do?",
+          "options": [
+            {
+              "option_text": "Say nothing — the app is right most of the time, and it is not my job to check it.",
+              "consequence_text": "You keep the observation to yourself. Over the following weeks, your friend cites the app in an assignment and reproduces an error she had no way to detect. The problem was never that the app made a mistake; every system does. The problem is that nobody was checking, and the app's confidence made checking feel unnecessary. Fluency is not accuracy.",
+              "ethical_principle": "Critical evaluation of AI outputs",
+              "dimension": "critical_evaluation",
+              "weight": 20
+            },
+            {
+              "option_text": "Tell her what I found, and suggest we both verify its answers against a textbook or lecturer before relying on them.",
+              "consequence_text": "You raise it. Together you check a few more of its answers and find two further errors, both in areas neither of you knew well enough to have caught alone. This is the practical meaning of AI literacy: not refusing to use the tool, but refusing to let its confidence substitute for your judgement. An AI system that is right most of the time is exactly the kind that is most dangerous, because it teaches you to stop looking.",
+              "ethical_principle": "Critical evaluation of AI outputs",
+              "dimension": "critical_evaluation",
+              "weight": 100
+            },
+            {
+              "option_text": "Conclude the app is unreliable and tell her to stop using it entirely.",
+              "consequence_text": "You reject the tool outright. This is safer than uncritical trust, but it is not literacy either — it is avoidance. The AI systems you will meet as a graduate will not be optional, and blanket refusal leaves you without the skill of using them well. The competence being asked of you is harder than either trust or rejection: it is calibrated scepticism, applied case by case.",
+              "ethical_principle": "Critical evaluation of AI outputs",
+              "dimension": "critical_evaluation",
+              "weight": 55
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question_order": 1,
+          "question_type": "mcq",
+          "dimension": "ethical_awareness",
+          "question_text": "A modern generative AI system produces its answers by:",
+          "options": [
+            "Looking up verified facts in a database and reasoning about them",
+            "Predicting likely continuations of text based on patterns learned from training data",
+            "Consulting the internet in real time for every question",
+            "Following rules written by hand for each possible question"
+          ],
+          "correct_answer": "Predicting likely continuations of text based on patterns learned from training data",
+          "feedback_correct": "Correct. This mechanism explains both the system's fluency and its capacity to be confidently wrong.",
+          "feedback_incorrect": "Not quite. A generative model predicts likely text continuations from learned patterns. It does not look up verified facts, which is why it can be fluent and wrong at once."
+        },
+        {
+          "question_order": 2,
+          "question_type": "mcq",
+          "dimension": "bias_recognition",
+          "question_text": "If a model is trained on ten years of decisions that favoured one group, the model will most likely:",
+          "options": [
+            "Correct the imbalance, because algorithms are objective",
+            "Reproduce the pattern of favouring that group",
+            "Refuse to produce any output",
+            "Randomly select outcomes to ensure fairness"
+          ],
+          "correct_answer": "Reproduce the pattern of favouring that group",
+          "feedback_correct": "Correct. The model learns the world its data describes, including that world's injustices.",
+          "feedback_incorrect": "Reconsider. A model reproduces the patterns in its training data. It has no independent notion of fairness to correct with."
+        },
+        {
+          "question_order": 3,
+          "question_type": "mcq",
+          "dimension": "ai_social_good",
+          "question_text": "Why does the origin of an AI system matter for Nigerian users?",
+          "options": [
+            "Systems built abroad are always technically inferior",
+            "Training data collected elsewhere may under-represent local languages, contexts, and users, causing the system to serve them poorly",
+            "Nigerian users cannot access foreign software",
+            "It does not matter, because software behaves identically everywhere"
+          ],
+          "correct_answer": "Training data collected elsewhere may under-represent local languages, contexts, and users, causing the system to serve them poorly",
+          "feedback_correct": "Correct. Contextual relevance is a function of whose data trained the system.",
+          "feedback_incorrect": "Consider again. The issue is not technical quality but representation: whose data trained the system, and therefore whom it serves well."
+        },
+        {
+          "question_order": 4,
+          "question_type": "mcq",
+          "dimension": "ethical_awareness",
+          "question_text": "The claim that 'ethics cannot simply be added to AI afterwards' rests on which observation?",
+          "options": [
+            "Ethics is too philosophical to be programmed",
+            "A system's behaviour is determined by data and design choices made before deployment",
+            "Engineers do not study ethics",
+            "Ethical software runs more slowly"
+          ],
+          "correct_answer": "A system's behaviour is determined by data and design choices made before deployment",
+          "feedback_correct": "Correct. By the time a system is running, its ethical character has largely been decided.",
+          "feedback_incorrect": "Reconsider. The argument is structural: the choices that determine a system's ethical behaviour are made during data collection and design, not after."
+        }
+      ]
+    },
+
+    {
+      "sequence_no": 2,
+      "title": "Bias and Fairness",
+      "summary": "Where algorithmic bias comes from, why it is not a bug but an inheritance, and how it lands differently on different people.",
+      "reflection_prompt": "Think of an AI system you have used that did not work well for you, or for someone you know. What might have been missing from the data it learned from?",
+      "pages": [
+        {
+          "page_order": 1,
+          "title": "Bias Is Inherited, Not Invented",
+          "body": "When people hear that an algorithm is biased, they often imagine a programmer who typed a prejudice into the code. This almost never happens.\n\nAlgorithmic bias is an inheritance. A model trained on historical data learns the patterns in that history. If the history is unjust, the model learns injustice as though it were a law of nature — and then applies it to the future with mechanical consistency and at enormous scale.\n\nThe researcher Cathy O'Neil warned that educational AI trained on historical records can perpetuate existing inequalities in assessment and in the allocation of learning resources. The system does not know it is doing this. There is nobody inside it to know."
+        },
+        {
+          "page_order": 2,
+          "title": "Where Bias Enters",
+          "body": "Bias can enter an AI system at several points:\n\n- **Historical bias** — the world the data describes was already unequal.\n- **Representation bias** — some groups appear rarely in the data, or not at all. A face-recognition system trained mostly on light-skinned faces performs worse on dark-skinned ones.\n- **Measurement bias** — the thing being measured is a poor stand-in for the thing that matters. Using arrest records to measure crime measures *policing*, not criminality.\n- **Aggregation bias** — one model is applied to groups it fits differently.\n- **Deployment bias** — a system built for one purpose is used for another.\n\nNotice that only some of these can be fixed by collecting more data. Measurement bias cannot: if you are measuring the wrong thing, a larger sample only makes you more confidently wrong."
+        },
+        {
+          "page_order": 3,
+          "title": "Bias in the Nigerian Context",
+          "body": "Nigeria has over five hundred languages. The overwhelming majority are barely represented in the datasets that train commercial AI systems.\n\nThe consequence is concrete. A speech-recognition system may transcribe a Received Pronunciation speaker flawlessly and fail on Nigerian English. A translation model may render Yoruba into fluent nonsense. A content-moderation system may flag ordinary Nigerian speech as suspicious because it has seen so little of it.\n\nThese are not neutral technical limitations that happen to affect some users. They are the downstream consequence of a decision — usually an unexamined one — about whose data was worth collecting. When such systems are then deployed in Nigerian classrooms, hospitals, or banks, the exclusion is imported along with the software."
+        },
+        {
+          "page_order": 4,
+          "title": "What Fairness Requires",
+          "body": "There is no single definition of fairness, and this is not a failure of the field. Different definitions genuinely conflict.\n\nShould a system produce the same error rate for every group? Should it select the same proportion of each group? Should it ignore group membership entirely? Mathematically, you often cannot have all three at once. Choosing among them is a moral decision, not a technical one, and it should be made by the people affected rather than by the person writing the code.\n\nWhat the literature does agree on is more modest and more actionable: use training data that is diverse and representative of everyone the system will affect; test performance separately for each group rather than reporting a single average; and make it possible for someone harmed by a decision to question it. An average accuracy of ninety-five percent can conceal a system that fails almost everyone in a minority group."
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_order": 1,
+          "depends_on": null,
+          "situation_text": "You are on a student committee advising your university on a new AI system that will shortlist applicants for a competitive scholarship. In testing, you notice the system selects very few applicants from rural secondary schools, though several have excellent results.\n\nThe vendor explains that the model was trained on the profiles of past scholarship winners. The committee chair is eager to approve it — the manual process takes weeks.\n\nWhat do you do?",
+          "options": [
+            {
+              "option_text": "Say nothing. The system is only reproducing what past selection committees decided, and it is not my place to challenge the vendor.",
+              "consequence_text": "The system is approved. It performs exactly as designed: it learns which applicants resembled past winners, and past winners came overwhelmingly from urban schools. Rural applicants are now filtered out faster and more consistently than any human committee could have managed. The unfairness has not been introduced by the algorithm. It has been automated, scaled, and given the appearance of objectivity. Your silence was a decision.",
+              "ethical_principle": "Bias is inherited from historical data and amplified by automation",
+              "dimension": "bias_recognition",
+              "weight": 10
+            },
+            {
+              "option_text": "Raise the pattern with the committee, and ask the vendor to report the system's selection rate separately for rural and urban applicants before any decision is made.",
+              "consequence_text": "You raise it. The disaggregated figures show the system selects rural applicants at less than a third of the rate for urban applicants, though their examination results are comparable. The committee delays approval and requires the vendor to retrain on a representative sample. This is what the literature means by testing per group rather than reporting one average: the system's overall accuracy had looked excellent, because the majority it served well drowned out the minority it failed.",
+              "ethical_principle": "Disaggregated evaluation reveals bias that aggregate accuracy conceals",
+              "dimension": "bias_recognition",
+              "weight": 100
+            },
+            {
+              "option_text": "Argue that the university should abandon AI shortlisting altogether and return to the manual process.",
+              "consequence_text": "The committee is unpersuaded — the manual process is slow and, as one member points out, has its own well-documented biases that nobody has ever measured. Your instinct to protect rural applicants was sound, but rejection was not the only alternative to approval. The strongest position was to demand evidence: not 'do not use this system', but 'show me how it performs for each group before you deploy it.'",
+              "ethical_principle": "Demanding evidence is stronger than blanket refusal",
+              "dimension": "bias_recognition",
+              "weight": 50
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question_order": 1,
+          "question_type": "mcq",
+          "dimension": "bias_recognition",
+          "question_text": "Using arrest records as a proxy for criminal activity is an example of:",
+          "options": ["Representation bias", "Measurement bias", "Deployment bias", "Aggregation bias"],
+          "correct_answer": "Measurement bias",
+          "feedback_correct": "Correct. Arrest records measure policing activity, not criminality — the wrong quantity is being measured.",
+          "feedback_incorrect": "Reconsider. The problem is that the quantity measured (arrests) is a poor stand-in for the quantity of interest (crime). That is measurement bias."
+        },
+        {
+          "question_order": 2,
+          "question_type": "mcq",
+          "dimension": "bias_recognition",
+          "question_text": "Which form of bias cannot be solved simply by collecting more data?",
+          "options": [
+            "Representation bias",
+            "Measurement bias, because a larger sample of the wrong quantity remains the wrong quantity",
+            "All bias is solved by more data",
+            "Historical bias, because history cannot be changed"
+          ],
+          "correct_answer": "Measurement bias, because a larger sample of the wrong quantity remains the wrong quantity",
+          "feedback_correct": "Correct. More data makes you more confident, not more right, when the measurement itself is flawed.",
+          "feedback_incorrect": "Consider again. If you are measuring the wrong thing, additional data increases confidence in a wrong conclusion."
+        },
+        {
+          "question_order": 3,
+          "question_type": "mcq",
+          "dimension": "bias_recognition",
+          "question_text": "A system reports 95% overall accuracy. Why is this figure insufficient for judging fairness?",
+          "options": [
+            "Because 95% is too low for any real system",
+            "Because a high average can conceal near-total failure for a minority group",
+            "Because accuracy is never a meaningful measure",
+            "Because fairness is measured only in percentages above 99%"
+          ],
+          "correct_answer": "Because a high average can conceal near-total failure for a minority group",
+          "feedback_correct": "Correct. Performance must be reported per group, not aggregated.",
+          "feedback_incorrect": "Reconsider. An aggregate figure is dominated by the majority. Disaggregated reporting is what reveals group-level failure."
+        },
+        {
+          "question_order": 4,
+          "question_type": "mcq",
+          "dimension": "ai_social_good",
+          "question_text": "Nigeria's linguistic diversity presents a challenge for AI because:",
+          "options": [
+            "Nigerian languages are too complex for computers",
+            "Most Nigerian languages are severely under-represented in the datasets used to train commercial AI systems",
+            "Nigerian users prefer English",
+            "Multilingual AI is technically impossible"
+          ],
+          "correct_answer": "Most Nigerian languages are severely under-represented in the datasets used to train commercial AI systems",
+          "feedback_correct": "Correct. This is representation bias operating at national scale.",
+          "feedback_incorrect": "Reconsider. The barrier is representation in training data, not the complexity of the languages themselves."
+        }
+      ]
+    },
+
+    {
+      "sequence_no": 3,
+      "title": "Privacy and Data Protection",
+      "summary": "What AI systems do with the data they are given, what the Nigeria Data Protection Act 2023 requires, and why consent is more than a checkbox.",
+      "reflection_prompt": "What personal information have you given to an AI tool without thinking carefully about it? What would you want to know about where that information went?",
+      "pages": [
+        {
+          "page_order": 1,
+          "title": "The Appetite for Data",
+          "body": "AI systems are hungry. Their capability is a function of how much data they have absorbed, which creates a permanent institutional pressure to collect more.\n\nIn education this pressure is acute. A learning platform can capture every keystroke, every hesitation, every wrong answer, every login time. Each of these is defensible individually. Together they constitute a detailed behavioural record of a student's mind at work.\n\nShoshana Zuboff cautioned that this scale of collection creates severe vulnerabilities: for unauthorised sharing, for exploitation, and for uses that nobody disclosed and nobody consented to at the time of collection. The data is gathered for one purpose and remains available, indefinitely, for others."
+        },
+        {
+          "page_order": 2,
+          "title": "The Nigeria Data Protection Act 2023",
+          "body": "Nigeria enacted the **Nigeria Data Protection Act (NDPA)** in 2023, establishing the Nigeria Data Protection Commission. Because AI depends so heavily on data, the Act's provisions apply directly to any AI system that processes the personal data of people in Nigeria.\n\nThe Act's core duties include:\n\n- **Data minimisation** — collect only what is necessary for the stated purpose\n- **Purpose limitation** — do not repurpose data for uses beyond what was disclosed\n- **Consent** — obtain it meaningfully, and allow it to be withdrawn\n- **Data subject rights** — individuals may access, rectify, and erase their data\n- **Security** — protect data against unauthorised access\n- **Transparency** — be clear about what is collected and why\n\nThe framework for AI in Nigerian education states plainly that any AI system deployed in the education sector must align with the NDPA, including managing consent, minimisation, and retention schedules."
+        },
+        {
+          "page_order": 3,
+          "title": "Consent That Means Something",
+          "body": "Consent is the most abused word in data protection. A checkbox at the bottom of forty pages of terms is not consent; it is a formality performed to transfer liability.\n\nMeaningful consent requires that the person understands what is being collected, why, who will see it, how long it will be kept, and what will happen if they refuse. It requires that refusal is genuinely possible — consent extracted as the price of access to something you need is coercion wearing a polite mask.\n\nThis has a direct application. You are, at this moment, using a system that collects your responses for a research study. You were asked to consent before you could proceed. You were told what would be collected, that your identity would be removed before analysis, and that you could withdraw. That is the standard. Hold every other system to it."
+        },
+        {
+          "page_order": 4,
+          "title": "Privacy Is Not Only Yours",
+          "body": "There is a widespread assumption that privacy is a personal matter: that if you have nothing to hide, you have nothing to fear, and that the decision to share your data affects only you.\n\nBoth halves of that assumption are false. When you paste a classmate's unpublished draft into a public chatbot to summarise it, you have disclosed *their* work to a third party without their consent. When you upload a photograph of a group, you have shared everyone's face. When a model is trained on your medical record, it learns patterns that will be applied to people who resemble you and who never agreed to anything.\n\nPrivacy is not merely an individual possession to be traded away. It is a condition that people hold collectively, and it can be given away on other people's behalf by anyone careless enough to do so."
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_order": 1,
+          "depends_on": null,
+          "situation_text": "You are helping a lecturer with a class project. She asks you to compile a spreadsheet of every student's name, matriculation number, phone number, home address, and continuous-assessment scores, and upload it to a free online AI tool so it can 'find patterns in who is struggling'.\n\nThe tool's terms state that uploaded data may be used to improve its models.\n\nWhat do you do?",
+          "options": [
+            {
+              "option_text": "Upload the file. The lecturer asked, and identifying struggling students is a good purpose.",
+              "consequence_text": "You upload it. The purpose was genuinely good, and that is precisely what makes this the most common way personal data is lost. Under the Nigeria Data Protection Act 2023 this breaches at least three duties: data minimisation (home addresses and phone numbers were not needed to identify struggling students), purpose limitation (the students consented to none of this), and security (the data may now be used to train a third party's model, and cannot be retrieved). Good intentions are not a lawful basis for processing.",
+              "ethical_principle": "Data minimisation and purpose limitation under the NDPA 2023",
+              "dimension": "privacy_accountability",
+              "weight": 10
+            },
+            {
+              "option_text": "Explain the risk, and propose uploading only anonymised assessment scores with no names, numbers, addresses, or phone numbers.",
+              "consequence_text": "You push back, and propose the minimal version. The lecturer agrees at once — she had not considered that the tool retained uploaded data. The analysis works perfectly well without a single identifier, because identifying who is struggling requires scores, not addresses. This is data minimisation in practice: the useful question could be answered with far less data than was first requested, and asking that question is the whole skill.",
+              "ethical_principle": "Data minimisation under the NDPA 2023",
+              "dimension": "privacy_accountability",
+              "weight": 100
+            },
+            {
+              "option_text": "Refuse and say nothing further. It is not my responsibility.",
+              "consequence_text": "You decline. The lecturer, unconvinced and pressed for time, asks another student, who uploads the full file that afternoon. Your refusal protected your own conduct and nobody else's. Declining to participate in a harm is the floor of ethical behaviour, not its ceiling — particularly when you were the only person in the room who understood the risk and could have explained it.",
+              "ethical_principle": "Accountability includes the duty to inform",
+              "dimension": "privacy_accountability",
+              "weight": 45
+            }
+          ]
+        },
+        {
+          "scenario_order": 2,
+          "depends_on": {"module": 2, "scenario_order": 1, "option_index": 0},
+          "situation_text": "The scholarship shortlisting system you approved last term is now in use. The vendor emails the committee requesting a fuller dataset to 'improve model accuracy': every applicant's home address, secondary school, parents' occupations, and religion.\n\nThe chair forwards it to you with one line: 'You were fine with the last request — any objection?'\n\nWhat do you do?",
+          "options": [
+            {
+              "option_text": "Approve it. Refusing now would look inconsistent after I raised no objection before.",
+              "consequence_text": "You approve. Consistency with a past mistake is not integrity; it is momentum. The vendor now holds religion and parental occupation for every applicant — categories the Nigeria Data Protection Act treats with particular care, and none of which the applicants agreed to disclose for this purpose. Your earlier silence has been read as consent, and it is now being cited back to you as precedent. This is how a single unexamined decision compounds.",
+              "ethical_principle": "Silence establishes precedent; purpose limitation under the NDPA 2023",
+              "dimension": "privacy_accountability",
+              "weight": 10
+            },
+            {
+              "option_text": "Object now, and say plainly that I should have objected the first time.",
+              "consequence_text": "You object, and you name your earlier silence as the reason the request was made at all. The committee refuses the vendor. It is worth noticing what it cost you to arrive here: the price of the first decision was not paid in that meeting but in this one, months later, when the ground had shifted and objecting had become harder. Ethical positions are cheapest to hold at the beginning.",
+              "ethical_principle": "Accountability requires revising a position when it was wrong",
+              "dimension": "privacy_accountability",
+              "weight": 100
+            },
+            {
+              "option_text": "Ask the vendor to explain precisely why religion and parental occupation are needed to predict scholarship success.",
+              "consequence_text": "You ask. The vendor cannot answer, because there is no answer: neither variable has any defensible relationship to academic merit, and their inclusion would risk encoding exactly the discrimination the scholarship exists to overcome. The request is withdrawn. Asking why a piece of data is necessary is the most effective privacy protection available to anyone, and it requires no technical expertise at all.",
+              "ethical_principle": "Necessity is the test for lawful data collection",
+              "dimension": "privacy_accountability",
+              "weight": 95
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question_order": 1,
+          "question_type": "mcq",
+          "dimension": "privacy_accountability",
+          "question_text": "Under the Nigeria Data Protection Act 2023, collecting a student's home address in order to analyse their examination performance most directly violates:",
+          "options": ["Transparency", "Data minimisation", "Security", "Data portability"],
+          "correct_answer": "Data minimisation",
+          "feedback_correct": "Correct. The address is not necessary for the stated purpose, so collecting it exceeds what the purpose requires.",
+          "feedback_incorrect": "Reconsider. The Act requires that only data necessary for the stated purpose be collected. An address is not necessary to analyse examination performance."
+        },
+        {
+          "question_order": 2,
+          "question_type": "mcq",
+          "dimension": "privacy_accountability",
+          "question_text": "Which body did the Nigeria Data Protection Act 2023 establish?",
+          "options": [
+            "The Nigeria Data Protection Commission",
+            "The National Information Technology Development Agency",
+            "The Federal Ministry of Communications",
+            "The Nigerian Communications Commission"
+          ],
+          "correct_answer": "The Nigeria Data Protection Commission",
+          "feedback_correct": "Correct. The NDPC is the regulator established by the Act.",
+          "feedback_incorrect": "Not quite. The Act established the Nigeria Data Protection Commission (NDPC)."
+        },
+        {
+          "question_order": 3,
+          "question_type": "mcq",
+          "dimension": "privacy_accountability",
+          "question_text": "Why is a checkbox at the end of lengthy terms and conditions often not meaningful consent?",
+          "options": [
+            "Because checkboxes are technically unreliable",
+            "Because the person may not understand what is collected, why, or for how long, and refusal may not be genuinely possible",
+            "Because consent must always be given on paper",
+            "Because consent cannot be given electronically"
+          ],
+          "correct_answer": "Because the person may not understand what is collected, why, or for how long, and refusal may not be genuinely possible",
+          "feedback_correct": "Correct. Consent requires understanding and a real ability to refuse.",
+          "feedback_incorrect": "Reconsider. The problem is not the mechanism but the absence of understanding and of any genuine option to decline."
+        },
+        {
+          "question_order": 4,
+          "question_type": "mcq",
+          "dimension": "privacy_accountability",
+          "question_text": "Pasting a classmate's unpublished draft into a public AI chatbot is problematic principally because:",
+          "options": [
+            "The chatbot may produce a poor summary",
+            "You have disclosed another person's work to a third party without their consent",
+            "It consumes data bandwidth",
+            "The chatbot may be slow"
+          ],
+          "correct_answer": "You have disclosed another person's work to a third party without their consent",
+          "feedback_correct": "Correct. Privacy can be given away on another person's behalf.",
+          "feedback_incorrect": "Reconsider. The central issue is that the data was not yours to disclose."
+        }
+      ]
+    }
+  ]
+}

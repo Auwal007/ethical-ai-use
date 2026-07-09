@@ -22,11 +22,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // After mount, sync with the attribute set by the inline script
+    // One-time hydration sync: the component must render 'light' on the server
+    // to match SSR, then adopt whatever the pre-paint inline script wrote to the
+    // <html data-theme> attribute. This is a legitimate "sync from an external
+    // system on mount" case, so the set-state-in-effect rule is disabled here.
     const current = document.documentElement.getAttribute('data-theme') as Theme;
-    if (current && current !== theme) {
-      setTheme(current);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTheme((prev) => (current && current !== prev ? current : prev));
     setMounted(true);
   }, []);
 

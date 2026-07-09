@@ -175,22 +175,34 @@ export default function HomePage() {
             <div className="relative border-l-2 ml-4 md:ml-8 space-y-12 pb-12" style={{ borderColor: 'var(--green-pale)' }}>
               {[
                 {
-                  title: 'Ethical Awareness',
-                  duration: '2 Hours', difficulty: 'Beginner',
-                  topics: ['Privacy', 'Bias', 'Transparency', 'Hallucinations'],
-                  status: 'Active'
+                  title: 'Understanding Artificial Intelligence',
+                  difficulty: 'Foundational',
+                  topics: ['What AI is', 'How machines learn', 'Why ethics is not an add-on'],
                 },
                 {
-                  title: 'Critical Evaluation',
-                  duration: '3 Hours', difficulty: 'Intermediate',
-                  topics: ['Fact-checking', 'Citation verification', 'Misinformation detection'],
-                  status: 'Active'
+                  title: 'Bias and Fairness',
+                  difficulty: 'Core',
+                  topics: ['Where bias enters', 'Representation', 'Disaggregated evaluation'],
+                },
+                {
+                  title: 'Privacy and Data Protection',
+                  difficulty: 'Core',
+                  topics: ['NDPA 2023', 'Data minimisation', 'Meaningful consent'],
+                },
+                {
+                  title: 'Transparency and Accountability',
+                  difficulty: 'Core',
+                  topics: ['Explainability', 'The accountability gap', 'Human oversight'],
+                },
+                {
+                  title: 'Academic Integrity and Responsible Use',
+                  difficulty: 'Applied',
+                  topics: ['Cognitive offloading', 'Disclosure', 'Responsible AI use'],
                 },
                 {
                   title: 'AI for Social Good',
-                  duration: '2.5 Hours', difficulty: 'Advanced',
-                  topics: ['Real-world case studies', 'Community impact', 'Responsible innovation'],
-                  status: 'Active'
+                  difficulty: 'Applied',
+                  topics: ['Human-centred AI', 'Local context', 'Community benefit'],
                 }
               ].map((mod, i) => (
                 <div key={i} className="relative pl-8 md:pl-12">
@@ -202,7 +214,6 @@ export default function HomePage() {
                         <h3 className="text-2xl font-bold font-heading" style={{ color: 'var(--green)' }}>{mod.title}</h3>
                       </div>
                       <div className="flex gap-2">
-                        <span className="text-xs px-3 py-1 rounded-full bg-slate-100 font-medium" style={{ color: 'var(--black)' }}>{mod.duration}</span>
                         <span className="text-xs px-3 py-1 rounded-full bg-slate-100 font-medium" style={{ color: 'var(--black)' }}>{mod.difficulty}</span>
                       </div>
                     </div>
@@ -221,20 +232,6 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
-
-              <div className="relative pl-8 md:pl-12 opacity-60">
-                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full border-4 border-white bg-gray-300" />
-                <div className="card p-6 rounded-xl border-dashed">
-                  <h3 className="text-xl font-bold font-heading mb-4 text-gray-500">Future Modules</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {['Prompt Engineering', 'AI Governance', 'AI in Education', 'Emerging AI Risks'].map((topic, j) => (
-                      <span key={j} className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -276,22 +273,15 @@ export default function HomePage() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                'AI Ethics Simulator', 'Interactive Quizzes', 'Achievement System', 'Learning Analytics Dashboard',
-                'Progress Monitoring', 'Adaptive Recommendations', 'Certification System', 'Leaderboards'
+                'Branching Ethical Scenarios', 'Interactive Quizzes', 'Ethical Reasoning Profile',
+                'Learning Analytics Dashboard', 'Progress Tracking', 'Written Reflections',
+                'Completion Certificate', 'Pre / Post Assessment'
               ].map((feat, i) => (
                 <div key={i} className="card p-6 flex flex-col items-center justify-center text-center gap-4 rounded-xl min-h-[160px]">
                   <Zap className="w-6 h-6 opacity-50" style={{ color: 'var(--gold)' }} />
                   <span className="font-bold text-sm" style={{ color: 'var(--green)' }}>{feat}</span>
                 </div>
               ))}
-            </div>
-
-            {/* Mockup Placeholder */}
-            <div className="mt-16 w-full h-64 md:h-96 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center shadow-inner">
-              <div className="flex flex-col items-center text-gray-400">
-                <LayoutDashboard className="w-12 h-12 mb-4 opacity-50" />
-                <span className="font-medium tracking-widest uppercase text-sm">Platform Dashboard Interface Preview</span>
-              </div>
             </div>
           </div>
         </section>
@@ -406,7 +396,7 @@ export default function HomePage() {
         </section>
 
         {/* SECTION 10: SUPERVISOR & DEPARTMENT SECTION */}
-        <section className="py-16 px-6 lg:px-12 bg-white">
+        <section className="py-16 px-6 lg:px-12 bg-white" id="info">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold font-heading text-center mb-10" style={{ color: 'var(--black)' }}>Project Information</h2>
 
@@ -421,9 +411,10 @@ export default function HomePage() {
                   { label: 'Institution', value: 'Abubakar Tafawa Balewa University' },
                   { label: 'Department', value: 'Management Information Technology' },
                   { label: 'Project Type', value: 'Final Year Project' },
-                  { label: 'Academic Session', value: '(placeholder)' },
-                  { label: 'Student Name', value: '(placeholder)' },
-                  { label: 'Supervisor', value: '(placeholder)' }
+                  { label: 'Academic Session', value: '2025/2026' },
+                  { label: 'Student Name', value: 'Muhammad Adam' },
+                  // TODO: replace with the actual supervisor's name before submission.
+                  { label: 'Supervisor', value: '[SUPERVISOR NAME]' }
                 ].map((info, i) => (
                   <div key={i} className="border-b pb-4" style={{ borderColor: 'var(--border-subtle)' }}>
                     <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>{info.label}</div>
@@ -535,9 +526,9 @@ export default function HomePage() {
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Platform</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link href="#about" className="hover:text-white transition-colors">About Project</Link></li>
+              <li><Link href="#why-it-matters" className="hover:text-white transition-colors">Why It Matters</Link></li>
               <li><Link href="#curriculum" className="hover:text-white transition-colors">Learning Modules</Link></li>
-              <li><Link href="#features" className="hover:text-white transition-colors">Features</Link></li>
+              <li><Link href="/login" className="hover:text-white transition-colors">Log In</Link></li>
               <li><Link href="/register" className="hover:text-white transition-colors">Create Account</Link></li>
             </ul>
           </div>
@@ -545,10 +536,8 @@ export default function HomePage() {
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Information</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link href="#info" className="hover:text-white transition-colors">Department Info</Link></li>
-              <li><Link href="#contact" className="hover:text-white transition-colors">Contact</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">GitHub Repository</a></li>
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="#info" className="hover:text-white transition-colors">Project Information</Link></li>
+              <li><Link href="#curriculum" className="hover:text-white transition-colors">Curriculum</Link></li>
             </ul>
           </div>
 

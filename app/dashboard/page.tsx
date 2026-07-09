@@ -1,300 +1,362 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/AuthProvider';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { SkeletonDashboard } from '@/components/ui/Skeleton';
-import { Zap, Flame, Trophy, Target, ArrowRight, CheckCircle, Lock, ChevronRight, Crown } from 'lucide-react';
+/**
+ * Dashboard: the participant's journey home. Replaces the old XP/leaderboard UI
+ * with a linear journey strip (Pre-test → M1..M6 → Post-test → Usability →
+ * Certificate), the streak pill, a small radar linking to the full profile, and
+ * the module list with lock states from is_accessible. Admin sees a portal link.
+ */
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  ArrowRight,
+  Award,
+  CheckCircle,
+  ClipboardCheck,
+  Flame,
+  Lock,
+  ChevronRight,
+} from "lucide-react";
 
-type ModuleProgress = {
-  id: number;
-  title: string;
-  description: string;
-  progress: { status: string; score: number | null };
-};
+import * as api from "@/lib/api";
+import { ApiError } from "@/lib/api";
+import RequireAuth from "@/components/RequireAuth";
+import { useAuth } from "@/components/AuthProvider";
+import { useToast } from "@/components/ui/Toast";
+import { SkeletonDashboard } from "@/components/ui/Skeleton";
+import DimensionRadar, { type RadarDatum } from "@/components/learn/DimensionRadar";
+import type { DimensionProfile, ModuleListItem } from "@/types/api";
 
-type LeaderboardEntry = {
-  rank: number;
-  name: string;
-  xp: number;
-  modules_completed: number;
-};
+const GREEN = "#1A5C2A";
+const GOLD = "#B8960C";
 
-function ProgressRing({ percentage, size = 100, stroke = 8 }: { percentage: number; size?: number; stroke?: number }) {
-  const radius = (size - stroke) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (percentage / 100) * circumference;
+type JourneyState = "complete" | "current" | "locked";
 
+export default function DashboardPage() {
   return (
-    <svg width={size} height={size} className="transform -rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--border-color)" strokeWidth={stroke} />
-      <circle
-        cx={size / 2} cy={size / 2} r={radius} fill="none"
-        stroke="var(--accent)" strokeWidth={stroke} strokeLinecap="round"
-        strokeDasharray={circumference} strokeDashoffset={offset}
-        className="progress-ring-circle"
-      />
-    </svg>
+    <RequireAuth>
+      <Dashboard />
+    </RequireAuth>
   );
 }
 
-export default function DashboardPage() {
-  const { user, loading } = useAuth();
+function Dashboard() {
+  const { user } = useAuth();
+  const { addToast } = useToast();
   const router = useRouter();
-  const [modules, setModules] = useState<ModuleProgress[]>([]);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [progressData, setProgressData] = useState({ completed: 0, total: 3, percentage: 0, avgScore: 0 });
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const [modules, setModules] = useState<ModuleListItem[]>([]);
+  const [profile, setProfile] = useState<DimensionProfile | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) router.push('/login');
-  }, [user, loading, router]);
-
-  useEffect(() => {
-    const fetchAll = async () => {
-      if (!user) return;
+    let active = true;
+    (async () => {
       try {
-        const [modRes, lbRes] = await Promise.all([
-          fetch('/api/modules'),
-          fetch('/api/leaderboard'),
-        ]);
-        const modData = await modRes.json();
-        const lbData = await lbRes.json();
-        setModules(modData);
-        setLeaderboard(lbData);
-
-        const completedMods = modData.filter((m: any) => m.progress.status === 'completed');
-        const completed = completedMods.length;
-        let scoreSum = 0, scoreCount = 0;
-        completedMods.forEach((m: any) => {
-          if (m.progress.score !== null) {
-            // Normalize Module 1 scores (out of 5) to percentage
-            const normalized = m.id === 1 ? (m.progress.score / 5) * 100 : m.progress.score;
-            scoreSum += normalized;
-            scoreCount++;
-          }
-        });
-
-        setProgressData({
-          completed,
-          total: modData.length,
-          percentage: modData.length > 0 ? (completed / modData.length) * 100 : 0,
-          avgScore: scoreCount > 0 ? Math.round(scoreSum / scoreCount) : 0,
-        });
-        setDataLoaded(true);
-      } catch { setDataLoaded(true); }
+        const [mods, prof] = await Promise.all([api.getModules(), api.getProfile()]);
+        if (!active) return;
+        setModules(mods);
+        setProfile(prof);
+      } catch (err) {
+        addToast(err instanceof ApiError ? err.message : "Could not load your dashboard.", "error");
+      } finally {
+        if (active) setLoaded(true);
+      }
+    })();
+    return () => {
+      active = false;
     };
-    fetchAll();
-  }, [user]);
+  }, [addToast]);
 
-  if (loading || !user) return <div className="p-4 sm:p-8 max-w-7xl mx-auto w-full"><SkeletonDashboard /></div>;
-  if (!dataLoaded) return <div className="p-4 sm:p-8 max-w-7xl mx-auto w-full"><SkeletonDashboard /></div>;
+  const completedCount = useMemo(
+    () => modules.filter((m) => m.status === "completed").length,
+    [modules],
+  );
+  const allModulesDone = modules.length > 0 && completedCount === modules.length;
 
-  const currentModule = modules.find(m => m.progress.status !== 'completed');
-  const xp = user.xp || 0;
-  const level = user.level || { name: 'Novice', number: 1, nextXp: 50 };
-  const xpProgress = level.nextXp > 0 ? Math.min(100, (xp / level.nextXp) * 100) : 100;
+  const radarData: RadarDatum[] = useMemo(
+    () =>
+      (profile?.dimensions ?? []).map((d) => ({
+        dimension: d.label.split(" ")[0],
+        current: d.current.percent ?? 0,
+      })),
+    [profile],
+  );
 
-  const badges = [
-    { emoji: '🛡️', name: 'Awareness Initiated', unlocked: progressData.completed >= 1, bg: 'from-orange-400 to-amber-500' },
-    { emoji: '🔍', name: 'Critical Thinker', unlocked: progressData.completed >= 2, bg: 'from-blue-400 to-indigo-500' },
-    { emoji: '🌟', name: 'Social Good Advocate', unlocked: progressData.completed >= 3, bg: 'from-purple-400 to-pink-500' },
-  ];
+  if (!user || !loaded) {
+    return (
+      <div className="p-4 sm:p-8 max-w-7xl mx-auto w-full">
+        <SkeletonDashboard />
+      </div>
+    );
+  }
 
   return (
-    <div className="p-4 sm:p-8 max-w-7xl mx-auto w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in-up">
-
-        {/* ===== LEFT COLUMN ===== */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-
-          {/* Welcome Hero Card */}
-          <div className="rounded-3xl p-8 text-white relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 shadow-xl">
-            <div className="relative z-10">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div>
-                  <p className="text-indigo-200 text-xs sm:text-sm font-semibold uppercase tracking-wider">Welcome back</p>
-                  <h1 className="text-3xl sm:text-4xl font-extrabold mt-1 font-heading">{user.name.split(' ')[0]}! 👋</h1>
-                  <p className="text-indigo-200 mt-2 text-sm sm:text-base max-w-md">
-                    {progressData.completed === progressData.total
-                      ? 'Congratulations! You\'ve mastered all modules. You\'re an AI ethics champion!'
-                      : `You're ${Math.round(progressData.percentage)}% through your journey. Keep going!`}
-                  </p>
-                </div>
-                {/* XP Level ring */}
-                <div className="flex flex-col items-center shrink-0">
-                  <div className="relative">
-                    <ProgressRing percentage={xpProgress} size={88} stroke={6} />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-2xl font-black font-heading">{xp}</span>
-                      <span className="text-[10px] uppercase tracking-wider text-indigo-200">XP</span>
-                    </div>
-                  </div>
-                  <span className="text-xs font-bold mt-2 text-indigo-200">{level.name}</span>
-                </div>
-              </div>
-
-              {/* Quick stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
-                {[
-                  { icon: Target, label: 'Completed', value: `${progressData.completed}/${progressData.total}` },
-                  { icon: Flame, label: 'Streak', value: `${user.streak || 0} days` },
-                  { icon: Trophy, label: 'Avg Score', value: progressData.avgScore > 0 ? `${progressData.avgScore}%` : '-' },
-                ].map((stat, i) => (
-                  <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/10">
-                    <stat.icon className="h-4 w-4 text-indigo-300 mb-1" />
-                    <p className="text-lg font-bold font-heading">{stat.value}</p>
-                    <p className="text-[10px] uppercase tracking-wider text-indigo-300">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Decorative elements */}
-            <div className="absolute -top-16 -right-16 w-56 h-56 bg-indigo-400/15 rounded-full blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-purple-400/10 rounded-full blur-3xl" />
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto w-full animate-fade-in-up">
+      {/* Header row: greeting + streak */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+            Welcome back
+          </p>
+          <h1 className="text-3xl font-extrabold font-heading" style={{ color: "var(--text-primary)" }}>
+            {user.full_name.split(" ")[0]}
+          </h1>
+        </div>
+        {user.streak > 0 && (
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border w-fit"
+            style={{
+              background: "var(--warning-bg)",
+              color: "var(--warning-text)",
+              borderColor: "rgba(184,150,12,0.3)",
+            }}
+          >
+            <Flame className="h-4 w-4" />
+            {user.streak} day streak
           </div>
+        )}
+      </div>
 
-          {/* Learning Modules */}
+      {/* Journey strip */}
+      <JourneyStrip
+        pretestDone={user.pretest_completed}
+        modules={modules}
+        allModulesDone={allModulesDone}
+        posttestAvailable={user.posttest_available}
+        profile={profile}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+        {/* Module list */}
+        <div className="lg:col-span-8">
           <div className="card-static rounded-3xl p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-lg font-heading" style={{ color: 'var(--text-primary)' }}>Learning Modules</h2>
-              <span className="text-xs font-bold px-2.5 py-1 rounded-lg" style={{ background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>
-                {progressData.completed} of {progressData.total}
+              <h2 className="font-bold text-lg font-heading" style={{ color: "var(--text-primary)" }}>
+                Learning Modules
+              </h2>
+              <span
+                className="text-xs font-bold px-2.5 py-1 rounded-lg"
+                style={{ background: "var(--accent-bg)", color: "var(--accent-text)" }}
+              >
+                {completedCount} of {modules.length}
               </span>
             </div>
             <div className="space-y-3">
-              {modules.map((mod, index) => {
-                const isCompleted = mod.progress.status === 'completed';
-                const isActive = !isCompleted && index === progressData.completed;
-                const isLocked = !isCompleted && index > progressData.completed;
-
-                return (
-                  <div key={mod.id}>
-                    {(isCompleted || isActive) ? (
-                      <Link href={`/modules/${mod.id}`}>
-                        <ModuleCard mod={mod} index={index} isCompleted={isCompleted} isActive={isActive} isLocked={false} />
-                      </Link>
-                    ) : (
-                      <ModuleCard mod={mod} index={index} isCompleted={false} isActive={false} isLocked={isLocked} />
-                    )}
-                  </div>
-                );
-              })}
+              {modules.map((m) => (
+                <ModuleRow key={m.id} module={m} />
+              ))}
             </div>
           </div>
         </div>
 
-        {/* ===== RIGHT COLUMN ===== */}
+        {/* Right column */}
         <div className="lg:col-span-4 flex flex-col gap-6">
-
-          {/* Badges */}
-          <div className="card-static rounded-3xl p-6">
-            <h2 className="font-bold text-lg font-heading mb-4" style={{ color: 'var(--text-primary)' }}>Badges Earned</h2>
-            <div className="space-y-3">
-              {badges.map((badge, i) => (
-                <div key={i} className="flex items-center space-x-3 p-3 rounded-2xl transition-all" style={{ background: badge.unlocked ? 'var(--accent-bg)' : 'var(--bg-card-hover)', opacity: badge.unlocked ? 1 : 0.5 }}>
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${badge.unlocked ? `bg-gradient-to-br ${badge.bg} shadow-md` : ''}`}
-                    style={!badge.unlocked ? { background: 'var(--border-color)' } : {}}>
-                    {badge.unlocked ? badge.emoji : '?'}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>{badge.name}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{badge.unlocked ? 'Unlocked' : 'Complete module to unlock'}</p>
-                  </div>
-                  {badge.unlocked && <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Leaderboard */}
-          <div className="card-static rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-lg font-heading" style={{ color: 'var(--text-primary)' }}>Leaderboard</h2>
-              <Crown className="h-5 w-5 text-amber-500" />
-            </div>
-            {leaderboard.length > 0 ? (
-              <div className="space-y-2">
-                {leaderboard.slice(0, 5).map((entry) => (
-                  <div key={entry.rank} className="flex items-center space-x-3 p-2.5 rounded-xl transition-colors" style={{ background: entry.rank <= 3 ? 'var(--accent-bg)' : 'transparent' }}>
-                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${entry.rank === 1 ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-white' : entry.rank === 2 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-white' : entry.rank === 3 ? 'bg-gradient-to-br from-orange-300 to-orange-500 text-white' : ''}`}
-                      style={entry.rank > 3 ? { background: 'var(--border-color)', color: 'var(--text-muted)' } : {}}>
-                      {entry.rank}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>{entry.name}</p>
-                    </div>
-                    <span className="text-xs font-bold flex items-center" style={{ color: 'var(--accent)' }}>
-                      <Zap className="h-3 w-3 mr-0.5" />{entry.xp}
-                    </span>
-                  </div>
-                ))}
+          {/* Radar snapshot */}
+          {profile && (profile.has_pretest || completedCount > 0) && (
+            <Link href="/profile" className="card rounded-3xl p-5 block group">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="font-bold font-heading" style={{ color: "var(--text-primary)" }}>
+                  Reasoning Profile
+                </h2>
+                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" style={{ color: "var(--text-muted)" }} />
               </div>
-            ) : (
-              <p className="text-center text-sm py-6" style={{ color: 'var(--text-muted)' }}>Complete modules to appear here!</p>
-            )}
-          </div>
+              <DimensionRadar
+                data={radarData}
+                series={[{ key: "current", label: "Current", color: GREEN }]}
+                height={220}
+              />
+            </Link>
+          )}
 
-          {/* Admin portal link */}
-          {user.role === 'admin' && (
-            <Link href="/admin" className="card rounded-3xl p-5 flex items-center justify-between group bg-gradient-to-br from-slate-800 to-slate-900 text-white border-slate-700">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-xl">🛠️</div>
+          {/* Admin portal */}
+          {user.role === "admin" && (
+            <Link
+              href="/admin"
+              className="card rounded-3xl p-5 flex items-center justify-between group text-white"
+              style={{ background: "linear-gradient(135deg, #1f2937, #0f172a)" }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ background: GREEN }}>
+                  🛠️
+                </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Admin Portal</p>
-                  <p className="text-sm font-medium">Manage & Monitor</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-300">Admin Portal</p>
+                  <p className="text-sm font-medium">Monitor & Export</p>
                 </div>
               </div>
               <ChevronRight className="h-5 w-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
             </Link>
           )}
-
-          {/* Current task */}
-          {!currentModule && progressData.completed === progressData.total && (
-            <div className="card-static rounded-3xl p-6 text-center">
-              <div className="text-4xl mb-3">🎉</div>
-              <h3 className="font-bold font-heading" style={{ color: 'var(--text-primary)' }}>All Complete!</h3>
-              <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>You&apos;ve mastered all modules. Amazing work!</p>
-            </div>
-          )}
         </div>
       </div>
     </div>
   );
 }
 
-function ModuleCard({ mod, index, isCompleted, isActive, isLocked }: {
-  mod: ModuleProgress; index: number; isCompleted: boolean; isActive: boolean; isLocked: boolean;
+// ---------------------------------------------------------------------------
+function JourneyStrip({
+  pretestDone,
+  modules,
+  allModulesDone,
+  posttestAvailable,
+  profile,
+}: {
+  pretestDone: boolean;
+  modules: ModuleListItem[];
+  allModulesDone: boolean;
+  posttestAvailable: boolean;
+  profile: DimensionProfile | null;
 }) {
-  const normalizedScore = mod.id === 1 && mod.progress.score !== null
-    ? `${mod.progress.score}/5`
-    : mod.progress.score !== null
-      ? `${mod.progress.score}%`
-      : '-';
+  const posttestDone = profile?.has_posttest ?? false;
+  // usability/certificate completion isn't directly on /me; infer from posttest+.
+  const steps: { label: string; href: string; state: JourneyState }[] = [];
+
+  steps.push({
+    label: "Pre-test",
+    href: "/pretest",
+    state: pretestDone ? "complete" : "current",
+  });
+
+  modules.forEach((m) => {
+    const state: JourneyState =
+      m.status === "completed" ? "complete" : m.is_accessible ? "current" : "locked";
+    steps.push({ label: `M${m.sequence_no}`, href: `/modules/${m.id}`, state });
+  });
+
+  steps.push({
+    label: "Post-test",
+    href: "/posttest",
+    state: posttestDone ? "complete" : allModulesDone && posttestAvailable ? "current" : "locked",
+  });
+  steps.push({
+    label: "Usability",
+    href: "/usability",
+    state: posttestDone ? "current" : "locked",
+  });
+  steps.push({
+    label: "Certificate",
+    href: "/certificate",
+    state: posttestDone ? "current" : "locked",
+  });
 
   return (
-    <div className={`group p-4 rounded-2xl flex items-center justify-between transition-all ${isLocked ? 'opacity-50' : 'cursor-pointer'}`}
+    <div className="card-static rounded-3xl p-5 overflow-x-auto">
+      <div className="flex items-center gap-2 min-w-max">
+        {steps.map((s, i) => (
+          <div key={s.label} className="flex items-center">
+            <JourneyNode {...s} />
+            {i < steps.length - 1 && (
+              <div
+                className="w-6 h-0.5 mx-1"
+                style={{ background: s.state === "complete" ? "var(--success)" : "var(--border-color)" }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function JourneyNode({
+  label,
+  href,
+  state,
+}: {
+  label: string;
+  href: string;
+  state: JourneyState;
+}) {
+  const content = (
+    <div className="flex flex-col items-center gap-1 min-w-[52px]">
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold shrink-0"
+        style={{
+          background:
+            state === "complete" ? "var(--success)" : state === "current" ? "var(--accent)" : "var(--border-color)",
+          color: state === "locked" ? "var(--text-muted)" : "white",
+        }}
+      >
+        {state === "complete" ? (
+          <CheckCircle className="h-5 w-5" />
+        ) : state === "locked" ? (
+          <Lock className="h-4 w-4" />
+        ) : (
+          label.startsWith("M") ? label.slice(1) : <ArrowRight className="h-4 w-4" />
+        )}
+      </div>
+      <span className="text-[10px] font-semibold" style={{ color: "var(--text-muted)" }}>
+        {label}
+      </span>
+    </div>
+  );
+
+  if (state === "locked") return content;
+  return (
+    <Link href={href} className="hover:opacity-80 transition-opacity">
+      {content}
+    </Link>
+  );
+}
+
+function ModuleRow({ module }: { module: ModuleListItem }) {
+  const isCompleted = module.status === "completed";
+  const isAccessible = module.is_accessible;
+
+  const inner = (
+    <div
+      className={`group p-4 rounded-2xl flex items-center justify-between transition-all ${
+        isAccessible || isCompleted ? "cursor-pointer" : "opacity-50"
+      }`}
       style={{
-        background: isActive ? 'var(--accent-bg)' : isCompleted ? 'var(--success-bg)' : 'var(--bg-card-hover)',
-        border: isActive ? '2px solid var(--accent)' : isCompleted ? '2px solid var(--success)' : '1px solid var(--border-color)',
-      }}>
-      <div className="flex items-center space-x-4">
-        <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-bold text-sm text-white shrink-0 ${isCompleted ? 'bg-gradient-to-br from-emerald-400 to-green-600' : isActive ? 'bg-gradient-to-br from-indigo-500 to-purple-600' : 'bg-slate-300'}`}>
-          {isCompleted ? <CheckCircle className="h-5 w-5" /> : `0${index + 1}`}
+        background: isCompleted
+          ? "var(--success-bg)"
+          : isAccessible
+          ? "var(--accent-bg)"
+          : "var(--bg-card-hover)",
+        border: isCompleted
+          ? "2px solid var(--success)"
+          : isAccessible
+          ? "2px solid var(--accent)"
+          : "1px solid var(--border-color)",
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-sm text-white shrink-0"
+          style={{
+            background: isCompleted ? "var(--success)" : isAccessible ? "var(--accent)" : "var(--text-muted)",
+          }}
+        >
+          {isCompleted ? <CheckCircle className="h-5 w-5" /> : `0${module.sequence_no}`}
         </div>
         <div>
-          <p className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{mod.title}</p>
-          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: isCompleted ? 'var(--success-text)' : isActive ? 'var(--accent-text)' : 'var(--text-muted)' }}>
-            {isCompleted ? `Completed • Score: ${normalizedScore}` : isActive ? 'In Progress • Start Now' : `Locked • Complete Module ${index}`}
+          <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>{module.title}</p>
+          <p
+            className="text-[11px] font-semibold uppercase tracking-wider"
+            style={{
+              color: isCompleted ? "var(--success-text)" : isAccessible ? "var(--accent-text)" : "var(--text-muted)",
+            }}
+          >
+            {isCompleted ? "Completed" : isAccessible ? "Available now" : "Locked"}
           </p>
         </div>
       </div>
       <div className="shrink-0 ml-2">
-        {isCompleted ? <CheckCircle className="h-5 w-5" style={{ color: 'var(--success)' }} /> :
-         isActive ? <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" style={{ color: 'var(--accent)' }} /> :
-         <Lock className="h-4 w-4" style={{ color: 'var(--text-muted)' }} />}
+        {isCompleted ? (
+          <CheckCircle className="h-5 w-5" style={{ color: "var(--success)" }} />
+        ) : isAccessible ? (
+          <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" style={{ color: "var(--accent)" }} />
+        ) : (
+          <Lock className="h-4 w-4" style={{ color: "var(--text-muted)" }} />
+        )}
       </div>
     </div>
   );
+
+  if (isCompleted || isAccessible) {
+    return <Link href={`/modules/${module.id}`}>{inner}</Link>;
+  }
+  return inner;
 }

@@ -1,247 +1,234 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/AuthProvider';
-import { useRouter } from 'next/navigation';
-import { Users, BookOpen, TrendingUp, Award, Search, ChevronDown, ArrowUpDown } from 'lucide-react';
+/**
+ * Researcher dashboard. Consumes /api/admin/participants/ and /api/admin/stats/,
+ * shows aggregate stats + per-dimension pretest-vs-posttest means, a participant
+ * table, and a data-export panel with the four anonymised CSV downloads.
+ */
+import { useEffect, useState } from "react";
+import {
+  BookOpen,
+  Download,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 
-type ProgressRow = {
-  user_id: number;
-  user_name: string;
-  user_email: string;
-  user_xp: number;
-  module_id: number | null;
-  module_title: string | null;
-  status: string | null;
-  score: number | null;
-  completed_at: string | null;
-};
+import * as api from "@/lib/api";
+import { ApiError } from "@/lib/api";
+import RequireAuth from "@/components/RequireAuth";
+import { useToast } from "@/components/ui/Toast";
+import type { AdminStats, ExportDataset, Participant } from "@/types/api";
 
-type ModuleStat = { id: number; title: string; completions: number; avg_score: number | null };
-type Stats = { totalStudents: number; completedModules: number; avgScore: number; moduleStats: ModuleStat[] };
+const DATASETS: { key: ExportDataset; label: string; desc: string }[] = [
+  { key: "scores", label: "Scores", desc: "Pre/post totals + per-dimension" },
+  { key: "responses", label: "Responses", desc: "Every item answer + score" },
+  { key: "usability", label: "Usability", desc: "Raw + reverse-scored values" },
+  { key: "reflections", label: "Reflections", desc: "Free-text by module" },
+];
 
-export default function AdminDashboard() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-  const [progressData, setProgressData] = useState<ProgressRow[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortField, setSortField] = useState<'name' | 'score' | 'date'>('name');
-  const [expandedStudent, setExpandedStudent] = useState<number | null>(null);
+export default function AdminPage() {
+  return (
+    <RequireAuth requireAdmin>
+      <AdminDashboard />
+    </RequireAuth>
+  );
+}
+
+function AdminDashboard() {
+  const { addToast } = useToast();
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) router.push('/login');
-      else if (user.role !== 'admin') router.push('/dashboard');
-      else fetchAdminData();
-    }
-  }, [user, loading, router]);
+    let active = true;
+    (async () => {
+      try {
+        const [p, s] = await Promise.all([api.getParticipants(), api.getAdminStats()]);
+        if (!active) return;
+        setParticipants(p);
+        setStats(s);
+      } catch (err) {
+        addToast(err instanceof ApiError ? err.message : "Could not load admin data.", "error");
+      } finally {
+        if (active) setLoaded(true);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [addToast]);
 
-  const fetchAdminData = async () => {
-    const res = await fetch('/api/progress');
-    if (res.ok) {
-      const data = await res.json();
-      setProgressData(data.progress || data);
-      setStats(data.stats || null);
-    }
-  };
+  const filtered = participants.filter((p) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return p.full_name.toLowerCase().includes(q) || p.email.toLowerCase().includes(q);
+  });
 
-  if (loading || !user || user.role !== 'admin') {
+  if (!loaded) {
     return (
       <div className="p-4 sm:p-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
-          {[1, 2, 3, 4].map(i => <div key={i} className="skeleton rounded-2xl h-28" />)}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="skeleton rounded-2xl h-28" />
+          ))}
         </div>
         <div className="skeleton rounded-3xl h-96" />
       </div>
     );
   }
 
-  // Group progress by student
-  const studentMap = new Map<number, { name: string; email: string; xp: number; rows: ProgressRow[] }>();
-  progressData.forEach(row => {
-    if (!studentMap.has(row.user_id)) {
-      studentMap.set(row.user_id, { name: row.user_name, email: row.user_email, xp: row.user_xp || 0, rows: [] });
-    }
-    if (row.module_id) studentMap.get(row.user_id)!.rows.push(row);
-  });
-
-  const students = Array.from(studentMap.entries())
-    .filter(([, s]) => {
-      if (!searchQuery) return true;
-      return s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.email.toLowerCase().includes(searchQuery.toLowerCase());
-    })
-    .sort(([, a], [, b]) => {
-      if (sortField === 'name') return a.name.localeCompare(b.name);
-      if (sortField === 'score') return b.xp - a.xp;
-      return 0;
-    });
-
-  const completionRate = stats ? (stats.totalStudents > 0 ? Math.round((stats.completedModules / (stats.totalStudents * 3)) * 100) : 0) : 0;
-
   const statCards = [
-    { label: 'Total Students', value: stats?.totalStudents || 0, icon: Users, color: 'from-blue-500 to-indigo-600' },
-    { label: 'Modules Completed', value: stats?.completedModules || 0, icon: BookOpen, color: 'from-emerald-500 to-green-600' },
-    { label: 'Avg Score', value: `${stats?.avgScore || 0}%`, icon: TrendingUp, color: 'from-amber-500 to-orange-600' },
-    { label: 'Completion Rate', value: `${completionRate}%`, icon: Award, color: 'from-purple-500 to-pink-600' },
+    { label: "Total Students", value: stats?.total_students ?? 0, icon: Users },
+    { label: "Pre-test done", value: stats?.pretest_completed ?? 0, icon: ClipboardIcon },
+    { label: "Post-test done", value: stats?.posttest_completed ?? 0, icon: BookOpen },
+    { label: "Completion Rate", value: `${stats?.completion_rate ?? 0}%`, icon: TrendingUp },
   ];
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto animate-fade-in-up">
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold font-heading" style={{ color: 'var(--text-primary)' }}>Admin Dashboard</h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Monitor student progress and platform analytics.</p>
+        <h1 className="text-3xl font-extrabold font-heading" style={{ color: "var(--text-primary)" }}>Researcher Dashboard</h1>
+        <p style={{ color: "var(--text-secondary)" }}>Monitor participant progress and export anonymised data.</p>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statCards.map((s, i) => (
-          <div key={i} className="card-static rounded-2xl p-5 animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-            <div className="flex items-center justify-between mb-3">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-md`}>
-                <s.icon className="h-5 w-5 text-white" />
-              </div>
+          <div key={i} className="card-static rounded-2xl p-5">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "var(--accent-bg)" }}>
+              <s.icon className="h-5 w-5" style={{ color: "var(--accent-text)" }} />
             </div>
-            <p className="text-2xl font-black font-heading" style={{ color: 'var(--text-primary)' }}>{s.value}</p>
-            <p className="text-xs font-semibold uppercase tracking-wider mt-1" style={{ color: 'var(--text-muted)' }}>{s.label}</p>
+            <p className="text-2xl font-black font-heading" style={{ color: "var(--text-primary)" }}>{s.value}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider mt-1" style={{ color: "var(--text-muted)" }}>{s.label}</p>
           </div>
         ))}
       </div>
 
-      {/* Module Performance Chart */}
-      {stats?.moduleStats && stats.moduleStats.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Completions bar chart */}
-          <div className="card-static rounded-3xl p-6">
-            <h3 className="font-bold font-heading mb-6" style={{ color: 'var(--text-primary)' }}>Module Completions</h3>
-            <div className="flex items-end gap-6 h-40">
-              {stats.moduleStats.map((m, i) => {
-                const maxCompletions = Math.max(...stats.moduleStats.map(ms => ms.completions), 1);
-                const height = (m.completions / maxCompletions) * 100;
-                const colors = ['from-blue-400 to-indigo-500', 'from-emerald-400 to-green-500', 'from-purple-400 to-pink-500'];
-                return (
-                  <div key={m.id} className="flex-1 flex flex-col items-center">
-                    <span className="text-sm font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{m.completions}</span>
-                    <div className="w-full rounded-t-xl chart-bar bg-gradient-to-t transition-all" style={{ height: `${Math.max(height, 8)}%`, animationDelay: `${i * 0.2}s` }}>
-                      <div className={`w-full h-full rounded-t-xl bg-gradient-to-t ${colors[i]}`} />
-                    </div>
-                    <span className="text-[10px] font-semibold mt-2 text-center uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                      Mod {m.id}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+      {/* Means */}
+      {stats && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+          <div className="card-static rounded-2xl p-5">
+            <p className="text-xs uppercase tracking-wider font-bold mb-1" style={{ color: "var(--text-muted)" }}>Mean pre-test</p>
+            <p className="text-2xl font-black font-heading" style={{ color: "var(--text-primary)" }}>{fmt(stats.mean_pretest)}</p>
           </div>
-
-          {/* Average scores */}
-          <div className="card-static rounded-3xl p-6">
-            <h3 className="font-bold font-heading mb-6" style={{ color: 'var(--text-primary)' }}>Average Scores</h3>
-            <div className="space-y-4">
-              {stats.moduleStats.map((m) => {
-                const avg = m.avg_score || 0;
-                const normalizedAvg = m.id === 1 ? (avg / 5) * 100 : avg;
-                return (
-                  <div key={m.id}>
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{m.title}</span>
-                      <span className="font-bold" style={{ color: 'var(--accent)' }}>{Math.round(normalizedAvg)}%</span>
-                    </div>
-                    <div className="w-full h-3 rounded-full" style={{ background: 'var(--border-color)' }}>
-                      <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000" style={{ width: `${normalizedAvg}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="card-static rounded-2xl p-5">
+            <p className="text-xs uppercase tracking-wider font-bold mb-1" style={{ color: "var(--text-muted)" }}>Mean post-test</p>
+            <p className="text-2xl font-black font-heading" style={{ color: "var(--text-primary)" }}>{fmt(stats.mean_posttest)}</p>
+          </div>
+          <div className="card-static rounded-2xl p-5">
+            <p className="text-xs uppercase tracking-wider font-bold mb-1" style={{ color: "var(--text-muted)" }}>Mean gain</p>
+            <p className="text-2xl font-black font-heading" style={{ color: "var(--success)" }}>{fmt(stats.mean_gain)}</p>
           </div>
         </div>
       )}
 
-      {/* Student Progress Table */}
-      <div className="card-static rounded-3xl overflow-hidden">
-        <div className="p-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between" style={{ borderBottom: '1px solid var(--border-color)' }}>
-          <h3 className="font-bold text-lg font-heading" style={{ color: 'var(--text-primary)' }}>Student Progress</h3>
-          <div className="flex gap-3 w-full sm:w-auto">
-            <div className="relative flex-1 sm:flex-none">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: 'var(--text-muted)' }} />
-              <input
-                type="text" placeholder="Search students..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                className="input-field !pl-9 !py-2 !text-sm !rounded-xl sm:w-64"
-              />
-            </div>
-            <button onClick={() => setSortField(sortField === 'name' ? 'score' : 'name')} className="btn-secondary !py-2 !px-3 !rounded-xl flex items-center gap-1 text-xs">
-              <ArrowUpDown className="h-3.5 w-3.5" />
-              {sortField === 'name' ? 'Name' : 'XP'}
-            </button>
+      {/* Per-dimension means */}
+      {stats && (
+        <div className="card-static rounded-3xl p-6 mb-8">
+          <h2 className="font-bold text-lg font-heading mb-4" style={{ color: "var(--text-primary)" }}>Per-dimension means (pre vs post)</h2>
+          <div className="space-y-3">
+            {stats.per_dimension.map((d) => (
+              <div key={d.dimension} className="flex items-center justify-between text-sm">
+                <span className="font-medium" style={{ color: "var(--text-primary)" }}>{d.label}</span>
+                <span className="flex items-center gap-3" style={{ color: "var(--text-secondary)" }}>
+                  <span>pre {fmt(d.mean_pretest)}</span>
+                  <span>→</span>
+                  <span style={{ color: "var(--success-text)" }}>post {fmt(d.mean_posttest)}</span>
+                </span>
+              </div>
+            ))}
           </div>
         </div>
+      )}
 
-        <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-          {students.length === 0 ? (
-            <div className="px-6 py-12 text-center" style={{ color: 'var(--text-muted)' }}>
-              {searchQuery ? 'No students match your search.' : 'No student progress recorded yet.'}
-            </div>
-          ) : (
-            students.map(([userId, student]) => (
-              <div key={userId}>
-                <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer transition-colors hover:opacity-80"
-                  onClick={() => setExpandedStudent(expandedStudent === userId ? null : userId)}
-                  style={{ background: expandedStudent === userId ? 'var(--bg-card-hover)' : 'transparent' }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex shrink-0 items-center justify-center font-bold text-xs"
-                      style={{ background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>
-                      {student.name.substring(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{student.name}</p>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{student.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
-                    <span className="text-sm font-bold" style={{ color: 'var(--accent)' }}>{student.xp} XP</span>
-                    <span className="text-xs font-semibold px-2 py-1 rounded-lg" style={{
-                      background: student.rows.filter(r => r.status === 'completed').length === 3 ? 'var(--success-bg)' : 'var(--warning-bg)',
-                      color: student.rows.filter(r => r.status === 'completed').length === 3 ? 'var(--success-text)' : 'var(--warning-text)',
-                    }}>
-                      {student.rows.filter(r => r.status === 'completed').length}/3
-                    </span>
-                    <ChevronDown className={`h-4 w-4 transition-transform ${expandedStudent === userId ? 'rotate-180' : ''}`} style={{ color: 'var(--text-muted)' }} />
-                  </div>
-                </div>
-                {/* Expanded detail */}
-                {expandedStudent === userId && (
-                  <div className="px-6 pb-4 animate-slide-down">
-                    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border-color)' }}>
-                      {student.rows.length > 0 ? student.rows.map((row, i) => (
-                        <div key={i} className="px-4 py-3 flex items-center justify-between text-sm" style={{ background: 'var(--bg-card)', borderBottom: i < student.rows.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
-                          <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{row.module_title}</span>
-                          <div className="flex items-center gap-3">
-                            <span className={`px-2 py-0.5 rounded text-xs font-bold`} style={{
-                              background: row.status === 'completed' ? 'var(--success-bg)' : 'var(--warning-bg)',
-                              color: row.status === 'completed' ? 'var(--success-text)' : 'var(--warning-text)',
-                            }}>
-                              {row.status || 'Pending'}
-                            </span>
-                            <span className="font-bold" style={{ color: 'var(--text-primary)' }}>
-                              {row.score !== null ? row.score : '-'}
-                            </span>
-                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                              {row.completed_at ? new Date(row.completed_at).toLocaleDateString() : '-'}
-                            </span>
-                          </div>
-                        </div>
-                      )) : (
-                        <div className="px-4 py-6 text-center text-sm" style={{ color: 'var(--text-muted)' }}>No modules attempted yet</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))
-          )}
+      {/* Data export */}
+      <div className="card-static rounded-3xl p-6 mb-8">
+        <h2 className="font-bold text-lg font-heading mb-1" style={{ color: "var(--text-primary)" }}>Data Export (SPSS-ready CSV)</h2>
+        <p className="text-sm mb-4" style={{ color: "var(--text-secondary)" }}>
+          All exports are anonymised — pseudonymous participant IDs only, no names or emails.
+        </p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {DATASETS.map((d) => (
+            <a
+              key={d.key}
+              href={api.exportUrl(d.key)}
+              className="card rounded-2xl p-4 flex flex-col gap-2 group"
+              download
+            >
+              <Download className="h-5 w-5" style={{ color: "var(--accent)" }} />
+              <span className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>{d.label}</span>
+              <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>{d.desc}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Participants */}
+      <div className="card-static rounded-3xl overflow-hidden">
+        <div className="p-6 flex flex-col sm:flex-row gap-4 sm:items-center justify-between" style={{ borderBottom: "1px solid var(--border-color)" }}>
+          <h2 className="font-bold text-lg font-heading" style={{ color: "var(--text-primary)" }}>Participants</h2>
+          <input
+            type="text"
+            placeholder="Search name or email…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="input-field !py-2 !text-sm sm:w-64"
+          />
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
+            <thead>
+              <tr style={{ color: "var(--text-muted)" }} className="text-left text-xs uppercase tracking-wider">
+                <th className="px-6 py-3 font-semibold">Participant</th>
+                <th className="px-4 py-3 font-semibold">Consent</th>
+                <th className="px-4 py-3 font-semibold">Modules</th>
+                <th className="px-4 py-3 font-semibold">Pre</th>
+                <th className="px-4 py-3 font-semibold">Post</th>
+                <th className="px-4 py-3 font-semibold">Gain</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center" style={{ color: "var(--text-muted)" }}>
+                    {search ? "No participants match your search." : "No participants yet."}
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((p) => (
+                  <tr key={p.id} style={{ borderTop: "1px solid var(--border-subtle)" }}>
+                    <td className="px-6 py-3">
+                      <p className="font-bold" style={{ color: "var(--text-primary)" }}>{p.full_name}</p>
+                      <p className="text-xs" style={{ color: "var(--text-muted)" }}>{p.email}</p>
+                    </td>
+                    <td className="px-4 py-3">{p.has_consent ? "✓" : "—"}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--text-primary)" }}>{p.modules_completed}/6</td>
+                    <td className="px-4 py-3" style={{ color: "var(--text-secondary)" }}>{p.pretest_total ?? "—"}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--text-secondary)" }}>{p.posttest_total ?? "—"}</td>
+                    <td className="px-4 py-3 font-bold" style={{ color: "var(--success-text)" }}>{p.gain ?? "—"}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
+  );
+}
+
+function fmt(v: number | null): string {
+  return v === null || v === undefined ? "—" : v.toFixed(1);
+}
+
+// Small inline icon to avoid an extra import name clash.
+function ClipboardIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 2h6a1 1 0 011 1v1h1a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h1V3a1 1 0 011-1z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
   );
 }

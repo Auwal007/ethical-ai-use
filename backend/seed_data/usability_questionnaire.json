@@ -1,0 +1,44 @@
+{
+  "instrument": "System Usability Questionnaire",
+  "version": "1.0",
+  "adapted_from": "Zaharias, P. (2006). A usability evaluation method for e-learning: focus on motivation to learn.",
+  "administration": "Administered once, after the post-test is submitted. All items are 5-point Likert. No right or wrong answers.",
+  "scale": {
+    "type": "likert",
+    "points": 5,
+    "anchors": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+    "criterion_mean": 3.0,
+    "interpretation": "A mean of 3.00 or above on an item indicates a positive usability evaluation for that item; below 3.00 indicates a negative evaluation."
+  },
+  "domains": ["navigation", "learnability", "visual_design", "instructional_feedback", "motivation_to_learn"],
+  "items_per_domain": 4,
+  "total_items": 20,
+  "note": "Item 7 and item 14 are negatively worded and must be reverse-scored (6 minus the response) before computing means. Reverse-scored items guard against acquiescence bias.",
+
+  "items": [
+    { "question_order": 1,  "dimension": "navigation", "reverse_scored": false, "question_text": "I could easily find my way around the system." },
+    { "question_order": 2,  "dimension": "navigation", "reverse_scored": false, "question_text": "It was always clear to me where I was within a module." },
+    { "question_order": 3,  "dimension": "navigation", "reverse_scored": false, "question_text": "Moving between lessons, scenarios, and quizzes was straightforward." },
+    { "question_order": 4,  "dimension": "navigation", "reverse_scored": false, "question_text": "I could tell at any time how much of the course I had completed." },
+
+    { "question_order": 5,  "dimension": "learnability", "reverse_scored": false, "question_text": "I understood how to use the system without needing anyone to explain it." },
+    { "question_order": 6,  "dimension": "learnability", "reverse_scored": false, "question_text": "The purpose of each screen was clear to me." },
+    { "question_order": 7,  "dimension": "learnability", "reverse_scored": true,  "question_text": "I found the system unnecessarily complicated to use." },
+    { "question_order": 8,  "dimension": "learnability", "reverse_scored": false, "question_text": "I would be able to use this system again after a break without relearning it." },
+
+    { "question_order": 9,  "dimension": "visual_design", "reverse_scored": false, "question_text": "The text was easy to read on the device I used." },
+    { "question_order": 10, "dimension": "visual_design", "reverse_scored": false, "question_text": "The layout of the pages was clear and uncluttered." },
+    { "question_order": 11, "dimension": "visual_design", "reverse_scored": false, "question_text": "The system worked well on my phone or the device I normally use." },
+    { "question_order": 12, "dimension": "visual_design", "reverse_scored": false, "question_text": "Pages loaded quickly enough given my internet connection." },
+
+    { "question_order": 13, "dimension": "instructional_feedback", "reverse_scored": false, "question_text": "The feedback I received after quizzes helped me understand my mistakes." },
+    { "question_order": 14, "dimension": "instructional_feedback", "reverse_scored": true,  "question_text": "I was often unsure whether my answers were right or wrong." },
+    { "question_order": 15, "dimension": "instructional_feedback", "reverse_scored": false, "question_text": "The consequences shown after each scenario choice made me think about my decision." },
+    { "question_order": 16, "dimension": "instructional_feedback", "reverse_scored": false, "question_text": "The system helped me see how my understanding changed as I progressed." },
+
+    { "question_order": 17, "dimension": "motivation_to_learn", "reverse_scored": false, "question_text": "The content held my attention." },
+    { "question_order": 18, "dimension": "motivation_to_learn", "reverse_scored": false, "question_text": "The scenarios felt relevant to situations I might actually face as a student." },
+    { "question_order": 19, "dimension": "motivation_to_learn", "reverse_scored": false, "question_text": "Using this system made me want to learn more about the ethics of artificial intelligence." },
+    { "question_order": 20, "dimension": "motivation_to_learn", "reverse_scored": false, "question_text": "I would recommend this system to another student." }
+  ]
+}

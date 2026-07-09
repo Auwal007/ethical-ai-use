@@ -1,0 +1,44 @@
+# Render blueprint for the Django backend + managed PostgreSQL.
+#
+# This file lives in backend/. When creating the Blueprint on Render, set the
+# service root directory to `backend`. (The repo root render.yaml belongs to
+# the existing Next.js deploy and is intentionally left untouched.)
+databases:
+  - name: ethical-ai-db
+    databaseName: ethical_ai
+    plan: free
+
+services:
+  - type: web
+    name: ethical-ai-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ethical-ai-db
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        # Render injects the external hostname; add it here after first deploy
+        # or set to the onrender.com domain.
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      # Optional superuser bootstrap (consumed by build.sh -> create_admin).
+      - key: DJANGO_ADMIN_EMAIL
+        sync: false
+      - key: DJANGO_ADMIN_PASSWORD
+        sync: false
+      - key: DJANGO_ADMIN_NAME
+        sync: false

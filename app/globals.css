@@ -329,3 +329,43 @@ body {
   animation: bar-grow 0.8s ease-out both;
   transform-origin: bottom;
 }
+
+/* ===== Markdown lesson body (react-markdown) ===== */
+.prose-lesson p { margin-bottom: 1rem; }
+.prose-lesson h1,
+.prose-lesson h2,
+.prose-lesson h3 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  font-weight: 700;
+  margin: 1.25rem 0 0.5rem;
+}
+.prose-lesson h1 { font-size: 1.5rem; }
+.prose-lesson h2 { font-size: 1.25rem; }
+.prose-lesson h3 { font-size: 1.1rem; }
+.prose-lesson ul,
+.prose-lesson ol { margin: 0.5rem 0 1rem 1.25rem; }
+.prose-lesson ul { list-style: disc; }
+.prose-lesson ol { list-style: decimal; }
+.prose-lesson li { margin-bottom: 0.35rem; }
+.prose-lesson strong { color: var(--text-primary); font-weight: 700; }
+.prose-lesson a { color: var(--accent); text-decoration: underline; }
+.prose-lesson code {
+  background: var(--bg-card-hover);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* ===== Print styles (certificate) ===== */
+@media print {
+  .no-print,
+  nav,
+  footer { display: none !important; }
+  body { background: #ffffff !important; }
+  .certificate-sheet {
+    border: 2px solid var(--gold) !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+}

@@ -1,0 +1,428 @@
+{
+  "_meta": {
+    "title": "Ethical AI Literacy System — Module Content (Modules 4-6)",
+    "version": "1.0",
+    "branching_note": "Module 5 scenario 1 is universal. Module 5 scenario 2 and Module 6 scenario 1 branch on the student's Module 5 choice. Module 6 scenario 2 branches on the Module 2 choice, closing a chain that spans the entire course."
+  },
+
+  "modules": [
+    {
+      "sequence_no": 4,
+      "title": "Transparency and Accountability",
+      "summary": "Why many AI systems cannot explain themselves, what explicability demands, and who answers when a machine causes harm.",
+      "reflection_prompt": "Describe a decision that an AI system has made about you, or about someone you know. Could that decision have been explained? Could it have been challenged?",
+      "pages": [
+        {
+          "page_order": 1,
+          "title": "The Black Box",
+          "body": "A modern neural network contains millions or billions of numerical parameters, adjusted through training until the whole produces useful outputs. No person chose those numbers. No person can read them.\n\nThis is the black box problem. The researcher Jenna Burrell observed that such opacity actively inhibits oversight: you cannot audit what you cannot inspect, and you cannot correct an error whose origin you cannot locate.\n\nIt is worth being precise about the kind of opacity at issue. It is not that the code is secret — often it is published. It is that the *reasoning*, if that word even applies, is distributed across millions of parameters in a form no human can follow. The system works, and nobody, including the people who built it, can say exactly why it produced this output rather than that one."
+        },
+        {
+          "page_order": 2,
+          "title": "Explicability",
+          "body": "Luciano Floridi and colleagues proposed **explicability** as a foundational principle for AI ethics, and defined it as answering two questions:\n\n1. **How does it work?** — intelligibility\n2. **Who is responsible for the way it works?** — accountability\n\nThe second question survives even when the first cannot be answered. A system may be technically inscrutable while the humans who commissioned, trained, deployed, and profited from it remain entirely identifiable.\n\nThis matters because opacity is frequently offered as an excuse. *Nobody can explain the model, so nobody can be blamed.* Explicability rejects this. If a system cannot be explained, that is itself a reason to hesitate before deploying it in a setting where its decisions affect people's lives."
+        },
+        {
+          "page_order": 3,
+          "title": "The Accountability Gap",
+          "body": "Andreas Matthias identified a genuine difficulty, and it deserves to be stated honestly rather than dismissed.\n\nTraditional accounts of responsibility assume that the person who builds a machine controls what it does. With a learning machine this assumption fails. The programmer writes the learning algorithm, not the behaviour; the behaviour emerges from data the programmer may never have seen. As machines learn from their environments, the person who created them exercises progressively less control over what they become.\n\nMatthias called the resulting space between capability and responsibility the **accountability gap**, and he did not claim to have closed it.\n\nBut a gap is not an exit. The global consensus in AI ethics guidelines, surveyed by Jobin and colleagues, is unambiguous: human actors must remain legally and ethically accountable for the artefacts they deploy. The machine cannot be a defendant. Somebody chose to build it, somebody chose to deploy it, and somebody chose to keep it running after the harm was known."
+        },
+        {
+          "page_order": 4,
+          "title": "Who Answers?",
+          "body": "When an AI system causes harm, responsibility distributes rather than disappears:\n\n- The **developer** who chose the training data and the objective\n- The **vendor** who marketed capabilities the system does not possess\n- The **institution** that deployed it without testing it on its own population\n- The **operator** who accepted its output without review\n- The **regulator** who permitted deployment without requiring evidence\n\nEach can point to another. This is precisely why the literature insists on human oversight, ethical auditing, and clear legal frameworks: not because any single actor is straightforwardly guilty, but because in the absence of an explicit allocation of responsibility, the default allocation is to nobody, and the cost falls entirely on the person the system harmed."
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_order": 1,
+          "depends_on": null,
+          "situation_text": "A hospital in your state uses an AI system to prioritise patients for a scarce treatment. A patient who was ranked low deteriorates and dies. The family asks why he was ranked low.\n\nThe hospital says the model is proprietary and its reasoning cannot be inspected. The vendor says the hospital chose how to use it. The doctor says she followed the system's recommendation, as she was instructed to.\n\nYou are asked to advise the hospital's ethics committee. What is your primary recommendation?",
+          "options": [
+            {
+              "option_text": "Accept that no individual is at fault. The system's reasoning is genuinely inscrutable, so responsibility cannot fairly be assigned.",
+              "consequence_text": "The committee accepts this and the matter closes. Notice what has just happened: the machine's opacity has been converted into a shield for every human in the chain. Matthias identified the accountability gap as a real philosophical problem, but the global consensus in AI ethics is that human actors remain accountable for what they deploy. A gap in explanation is not a gap in responsibility. The family has been told that a decision was made about their father's life by no one at all.",
+              "ethical_principle": "Opacity does not dissolve human accountability",
+              "dimension": "privacy_accountability",
+              "weight": 10
+            },
+            {
+              "option_text": "Recommend that the hospital suspend the system until the vendor can provide per-decision explanations, and that a clinician must be able to override and document any recommendation.",
+              "consequence_text": "The committee adopts your recommendation. This is explicability applied: the hospital cannot answer 'how does it work', so it must answer 'who is responsible for the way it works' — and it does so by restoring a human decision-maker who can be asked, and who can refuse. The deeper point is that the hospital's error preceded the death. It deployed a system in a life-critical setting without first requiring that its decisions could be explained or challenged.",
+              "ethical_principle": "Explicability: intelligibility where possible, accountability always",
+              "dimension": "privacy_accountability",
+              "weight": 100
+            },
+            {
+              "option_text": "Recommend that the doctor be sanctioned, since she made the final decision to follow the recommendation.",
+              "consequence_text": "The doctor is disciplined. This satisfies the desire for someone to answer, but it selects the person with the least power in the chain. She was instructed to follow the system. She could not inspect it. She did not procure it. Responsibility does distribute — to the developer who chose the data, the vendor who oversold it, the institution that deployed it untested, and the operator. Assigning all of it to the last human to touch the decision leaves every earlier choice unexamined, and the system still running.",
+              "ethical_principle": "Responsibility distributes across the chain of deployment",
+              "dimension": "privacy_accountability",
+              "weight": 40
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question_order": 1,
+          "question_type": "mcq",
+          "dimension": "privacy_accountability",
+          "question_text": "The 'black box' problem in AI refers to:",
+          "options": [
+            "The physical casing of a server",
+            "The inability to inspect or follow the reasoning by which a model reached its output",
+            "The secrecy of a company's source code",
+            "The storage of data in an unknown location"
+          ],
+          "correct_answer": "The inability to inspect or follow the reasoning by which a model reached its output",
+          "feedback_correct": "Correct. Even published code does not make a distributed parameter space intelligible.",
+          "feedback_incorrect": "Reconsider. Source code may be public and the model still opaque, because the reasoning is spread across millions of parameters."
+        },
+        {
+          "question_order": 2,
+          "question_type": "mcq",
+          "dimension": "ethical_awareness",
+          "question_text": "Floridi's principle of explicability requires answers to which two questions?",
+          "options": [
+            "How much does it cost, and who pays?",
+            "How does it work, and who is responsible for the way it works?",
+            "Who built it, and where is it hosted?",
+            "Is it accurate, and is it fast?"
+          ],
+          "correct_answer": "How does it work, and who is responsible for the way it works?",
+          "feedback_correct": "Correct. Intelligibility and accountability together.",
+          "feedback_incorrect": "Reconsider. Explicability pairs intelligibility ('how does it work') with accountability ('who is responsible')."
+        },
+        {
+          "question_order": 3,
+          "question_type": "mcq",
+          "dimension": "privacy_accountability",
+          "question_text": "Matthias's 'accountability gap' arises because:",
+          "options": [
+            "Programmers deliberately conceal their methods",
+            "A learning machine's behaviour emerges from data rather than from instructions its creator wrote",
+            "Courts do not understand technology",
+            "Machines have moral agency of their own"
+          ],
+          "correct_answer": "A learning machine's behaviour emerges from data rather than from instructions its creator wrote",
+          "feedback_correct": "Correct. The creator controls the learning process, not the learned behaviour.",
+          "feedback_incorrect": "Reconsider. The gap opens because the creator writes the learning algorithm, while the behaviour emerges from data."
+        },
+        {
+          "question_order": 4,
+          "question_type": "mcq",
+          "dimension": "ethical_awareness",
+          "question_text": "According to the global consensus surveyed by Jobin and colleagues, when an AI system causes harm:",
+          "options": [
+            "The system itself bears moral responsibility",
+            "Human actors remain legally and ethically accountable for the artefacts they deploy",
+            "Responsibility cannot be assigned if the model is opaque",
+            "Only the original programmer is liable"
+          ],
+          "correct_answer": "Human actors remain legally and ethically accountable for the artefacts they deploy",
+          "feedback_correct": "Correct. The machine cannot be a defendant.",
+          "feedback_incorrect": "Reconsider. Opacity does not remove human accountability; the consensus holds deployers responsible."
+        }
+      ]
+    },
+
+    {
+      "sequence_no": 5,
+      "title": "Academic Integrity and Responsible Use",
+      "summary": "What AI does to learning when it does your thinking, where the line falls between assistance and substitution, and how to draw it before someone draws it for you.",
+      "reflection_prompt": "Describe a time you were tempted to let an AI tool do work you should have done yourself, or a time you saw someone else do so. What made it tempting, and what did you decide?",
+      "pages": [
+        {
+          "page_order": 1,
+          "title": "Cognitive Offloading",
+          "body": "There is a difference between a tool that extends your thinking and a tool that replaces it.\n\nA calculator extends. You still choose the operation, interpret the result, and know when the answer is absurd. A generative AI that writes your essay does not extend anything. It performs the act of thinking that the essay was assigned to develop.\n\nThe literature calls this **cognitive offloading**: delegating a thinking task to a machine to the point that one's own reasoning capacity is never built. The immediate cost is an assignment that does not reflect your understanding. The lasting cost is that you do not acquire the understanding, and you graduate without a skill you believe you possess.\n\nMathew and Isaac document exactly this pattern among Nigerian students: uncritical over-reliance on generative tools, producing a superficial grasp of coursework and an erosion of the analytical capacity that university exists to develop."
+        },
+        {
+          "page_order": 2,
+          "title": "Where the Line Falls",
+          "body": "The line is not between using AI and not using it. It is between assistance and substitution.\n\n**Generally defensible:**\n- Asking AI to explain a concept you find difficult, then writing the work yourself\n- Using it to check your grammar, or to suggest how an argument might be reorganised\n- Asking it to generate practice questions to test yourself against\n- Using it to summarise a paper you have also read\n\n**Generally not:**\n- Submitting AI-generated text as your own original work\n- Using AI in an examination without permission\n- Citing sources the AI produced without verifying that they exist\n- Using it to produce work in a skill the assignment exists to assess\n\nThe test is simple and uncomfortable: **what was this task assigned to develop in me, and has the tool done that developing instead of me?**"
+        },
+        {
+          "page_order": 3,
+          "title": "Disclosure",
+          "body": "Most Nigerian universities do not yet have a written policy on AI use in assessment. Sanusi's work notes that the implementation of AI guidance in Nigerian education remains vague, and Marín and colleagues observe that universities in the region are adopting AI in an unregulated manner, without explicit institutional policies.\n\nThis absence produces a tempting inference: *nothing is prohibited, therefore everything is permitted.*\n\nIt is a bad inference. The absence of a rule is not a permission; it is an absence. When an institution has not yet decided, the responsible course is to ask, and to disclose. Tell your lecturer how you used the tool. If your use was defensible, disclosure costs you nothing. If you find yourself reluctant to disclose it, you have learned something important about the use.\n\nCrompton and colleagues argue that integrity policies should shift towards educational rather than purely punitive strategies. That shift depends on students who are willing to say what they did."
+        },
+        {
+          "page_order": 4,
+          "title": "The Argument Nobody Makes to You",
+          "body": "The usual argument against academic dishonesty is that you will be caught. It is a weak argument, because it is often false. Detection is unreliable, and the student who reasons this way is really being told: *do not get caught.*\n\nHere is the stronger argument.\n\nYou are at university for four or five years. Your career will last forty. Almost nothing you will be paid for is the production of essays; you will be paid for judgement — the capacity to look at a problem nobody has solved, notice what matters, and reason your way somewhere useful. That capacity is built by struggling with problems slightly beyond your current ability. It cannot be acquired any other way, and no tool can transfer it to you.\n\nEvery time you let a machine do the struggling, you have traded a permanent capability for a temporary grade. The exchange rate is terrible. It is also invisible, which is why so many people accept it."
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_order": 1,
+          "depends_on": null,
+          "situation_text": "It is eleven at night. A major assignment is due at eight tomorrow morning and you have written two paragraphs. You are exhausted, and you have another deadline the same week.\n\nA coursemate messages you: he has generated the full assignment with an AI tool. It is good. He offers to send it to you, saying you can 'change the words around a bit'. Your department has no written policy on AI use.\n\nWhat do you do?",
+          "options": [
+            {
+              "option_text": "Take it and rewrite it in my own words. Nothing in the rules forbids this, and I am out of time.",
+              "consequence_text": "You submit it. You are not caught, and you receive a good mark. The absence of a rule felt like permission — but the absence of a rule is not a permission, it is an absence. And the assignment was set to develop something in you. Rewriting a machine's argument teaches you to paraphrase, which you already knew how to do. Whatever the assignment existed to build, you did not build it, and you now hold a grade that says you did.",
+              "ethical_principle": "The absence of a policy is not a permission",
+              "dimension": "responsible_use",
+              "weight": 10
+            },
+            {
+              "option_text": "Decline, use AI only to help me understand the concepts I am stuck on, submit whatever I can genuinely write by morning, and tell my lecturer I used AI to study.",
+              "consequence_text": "You decline. You submit less than you wanted to and your mark is lower than his. You also disclose your use to your lecturer, who tells you it was entirely appropriate — and remembers, months later, that you were the student who asked. The test the literature offers is: what was this task assigned to develop in me, and has the tool done that developing instead of me? You applied it at eleven at night, exhausted, with no rule to compel you. That is what integrity is: the thing you do when nothing would have caught you.",
+              "ethical_principle": "Assistance extends thinking; substitution replaces it",
+              "dimension": "responsible_use",
+              "weight": 100
+            },
+            {
+              "option_text": "Decline for myself, but say nothing to him about it.",
+              "consequence_text": "You write your own work. Your coursemate submits the generated assignment and receives a higher mark than you. You have protected your own integrity, which is not nothing. But he believed, sincerely, that there was no problem — because nobody had told him there was. Crompton and colleagues argue integrity policies should be educational rather than purely punitive. That argument depends on someone doing the educating, and at eleven at night the only person available was you.",
+              "ethical_principle": "Integrity is individual; academic culture is collective",
+              "dimension": "responsible_use",
+              "weight": 60
+            }
+          ]
+        },
+        {
+          "scenario_order": 2,
+          "depends_on": {"module": 5, "scenario_order": 1, "option_index": 0},
+          "situation_text": "Three weeks later, your lecturer asks to see you.\n\nShe has read your assignment. She says the argument in the third section is sophisticated, and she would like you to expand it into a conference abstract — she thinks it is genuinely original. She asks you to explain, in your own words, how you arrived at it.\n\nYou did not arrive at it. You do not fully understand it.",
+          "options": [
+            {
+              "option_text": "Improvise an explanation and hope she does not press for detail.",
+              "consequence_text": "You bluff. She presses, gently, and you cannot answer. She says nothing further, but she stops asking you things. The cost of the assignment was never the risk of being caught by software; it was this — being offered the thing you actually wanted, an academic who believed in your mind, and having nothing to show her. You did not fail an integrity check. You failed to become the person she thought you were.",
+              "ethical_principle": "The cost of substitution is paid when you are finally asked to think",
+              "dimension": "responsible_use",
+              "weight": 10
+            },
+            {
+              "option_text": "Tell her the truth: that I used an AI tool, that I do not understand the argument, and that I would like to learn it properly.",
+              "consequence_text": "You tell her. It is a bad ten minutes. She does not report you; she asks why you did it, and you say you were exhausted and out of time, which is true. Then she does something you did not expect: she spends an hour explaining the argument you submitted, and you understand it for the first time. She still wants the abstract, but she wants you to write it. Disclosure cost you an uncomfortable conversation and returned the thing the assignment was supposed to give you.",
+              "ethical_principle": "Disclosure recovers what substitution took",
+              "dimension": "responsible_use",
+              "weight": 100
+            },
+            {
+              "option_text": "Decline the opportunity politely, saying I am too busy to develop it further.",
+              "consequence_text": "You decline. She accepts it without comment. Nothing bad happens, and that is precisely the point worth noticing: the penalty for what you did is not punishment. It is that you must now quietly avoid every situation in which you would be asked to think about your own work. That avoidance will cost you opportunities for years, and each individual refusal will seem, at the time, entirely reasonable.",
+              "ethical_principle": "Undisclosed substitution narrows the life available to you",
+              "dimension": "responsible_use",
+              "weight": 35
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question_order": 1,
+          "question_type": "mcq",
+          "dimension": "responsible_use",
+          "question_text": "The clearest test for whether a particular use of AI is academically defensible is:",
+          "options": [
+            "Whether the department has a written rule against it",
+            "Whether detection software would identify it",
+            "Whether the tool has done the developing that the task was assigned to do in you",
+            "Whether other students are doing the same thing"
+          ],
+          "correct_answer": "Whether the tool has done the developing that the task was assigned to do in you",
+          "feedback_correct": "Correct. The purpose of the task, not the presence of a rule, is the test.",
+          "feedback_incorrect": "Reconsider. Rules and detection are external. The real test concerns what the assignment was meant to build in you."
+        },
+        {
+          "question_order": 2,
+          "question_type": "mcq",
+          "dimension": "responsible_use",
+          "question_text": "Your department has no written AI policy. The responsible inference is:",
+          "options": [
+            "All AI use is permitted, since nothing is prohibited",
+            "All AI use is forbidden, since nothing is permitted",
+            "The institution has not yet decided, so ask and disclose",
+            "Policies do not apply to students"
+          ],
+          "correct_answer": "The institution has not yet decided, so ask and disclose",
+          "feedback_correct": "Correct. An absence is not a permission.",
+          "feedback_incorrect": "Reconsider. The absence of a rule is neither permission nor prohibition. It is a reason to ask."
+        },
+        {
+          "question_order": 3,
+          "question_type": "mcq",
+          "dimension": "responsible_use",
+          "question_text": "'Cognitive offloading' becomes harmful at the point where:",
+          "options": [
+            "Any tool is used at all",
+            "The reasoning capacity the task existed to build is never developed",
+            "More than half the work is machine-assisted",
+            "The tool is used outside class hours"
+          ],
+          "correct_answer": "The reasoning capacity the task existed to build is never developed",
+          "feedback_correct": "Correct. The harm is to a capability, not to a percentage.",
+          "feedback_incorrect": "Reconsider. The threshold is not quantitative. It is reached when the capacity the task was meant to develop is not developed."
+        },
+        {
+          "question_order": 4,
+          "question_type": "mcq",
+          "dimension": "critical_evaluation",
+          "question_text": "Crompton and colleagues argue that academic integrity policies for AI should move towards:",
+          "options": [
+            "Harsher automatic penalties",
+            "Educational rather than purely punitive strategies",
+            "Complete prohibition of all AI tools",
+            "Leaving the matter entirely to individual lecturers"
+          ],
+          "correct_answer": "Educational rather than purely punitive strategies",
+          "feedback_correct": "Correct — which depends on students willing to disclose what they did.",
+          "feedback_incorrect": "Reconsider. The argument favours educational strategies, which require disclosure to function."
+        }
+      ]
+    },
+
+    {
+      "sequence_no": 6,
+      "title": "AI for Social Good",
+      "summary": "What it would mean to build AI that serves people who are usually built for last, and why you are among the few positioned to do it.",
+      "reflection_prompt": "Identify one problem in your community that AI might genuinely help with. Who would need to be consulted before building it, and what could go wrong if they were not?",
+      "pages": [
+        {
+          "page_order": 1,
+          "title": "The Human-Centred Mindset",
+          "body": "UNESCO places a **human-centred mindset** at the foundation of its AI competency framework, before any technical skill.\n\nThe phrase is easy to nod at and hard to apply. It means that AI systems should serve human wellbeing, preserve human agency, and remain under human oversight — and that where these conflict with efficiency, profitability, or novelty, they win.\n\nThat is a demanding commitment. It rules out deploying a system because it is impressive. It rules out replacing a human decision-maker because the machine is cheaper, where the decision materially affects someone's life. It requires asking, before anything is built: *who is this for, and have we asked them?*"
+        },
+        {
+          "page_order": 2,
+          "title": "Built Elsewhere, Deployed Here",
+          "body": "You have met this argument in every module of this course, and it is worth stating one final time in its strongest form.\n\nOyelere and colleagues observe that most AI systems used across Africa are developed in Western contexts, and lack the contextual relevance to account for local cultures, languages, and infrastructural realities. Adetula documents the infrastructural side: unreliable electricity, high data costs, limited device access. Together these produce a systematic pattern in which the technology arrives fully formed, designed around assumptions that do not hold, and the people it does not fit are described as having an adoption problem.\n\nThey do not have an adoption problem. The tool has a design problem, and the design problem is that they were not there when it was designed."
+        },
+        {
+          "page_order": 3,
+          "title": "What Building for Here Requires",
+          "body": "Suppose you wanted to build an AI tool that genuinely served Nigerian users. The literature suggests a fairly concrete list.\n\n- **It must work on the devices people have.** A model that requires a fast connection and a recent phone has excluded most of its intended users before it processed a single input.\n- **It must work in the languages people speak.** Which means someone must do the unglamorous work of collecting data in those languages.\n- **It must be tested on the people it is for.** Not on a proxy population, not on an average.\n- **The people it affects must be able to question it.** Accountability is not an afterthought bolted on at deployment.\n- **It must collect only what it needs.** The Nigeria Data Protection Act is not an obstacle to building something good. It is a description of what building something good involves.\n\nNotice that this list is not primarily technical. Almost every item is a decision about whom you consider, and when."
+        },
+        {
+          "page_order": 4,
+          "title": "The Position You Are In",
+          "body": "You have now spent six modules learning to see what usually passes unnoticed: that a system's data decides whose voice counts; that fluency is not accuracy; that consent is not a checkbox; that opacity is not an excuse; that the absence of a rule is not a permission.\n\nMost people who will deploy AI in Nigerian institutions over the next decade will not have thought about any of this. Some of them will be your classmates. Some of them will be your employers. A few of them, in a few years, will be you — sitting on a committee, reviewing a vendor's proposal, with a deadline and a chair who wants it approved.\n\nThe AIERS instrument, which partly shaped the test you took at the start of this course, measures three things: ethical awareness, critical evaluation, and *AI for social good* — the belief that you bear some responsibility for how this technology lands on the people around you.\n\nThe first two can be taught. The third is a decision, and only you can make it."
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_order": 1,
+          "depends_on": {"module": 5, "scenario_order": 1, "option_index": 1},
+          "situation_text": "Your lecturer, who remembers that you disclosed your AI use honestly, invites you to lead a small student team.\n\nA nearby farming community loses crops to a disease that could be identified early from a photograph of a leaf. She has funding for one prototype. Your team has six months, and one team member argues that you should build for the newest phones first, because 'that's where the good camera is', and expand later.\n\nWhat do you decide?",
+          "options": [
+            {
+              "option_text": "Build for the newest phones first. A working prototype on good hardware proves the concept, and we can optimise later.",
+              "consequence_text": "The prototype works beautifully in the demonstration. It also requires a phone almost nobody in the farming community owns, and a connection they do not have. 'Expand later' is a promise that in practice is almost never kept, because the architecture built around fast hardware resists being made to work on slow. You have built a tool for the people who could already have afforded a solution. The farmers have, once again, an adoption problem.",
+              "ethical_principle": "Designing for the powerful first excludes by architecture, not by intention",
+              "dimension": "ai_social_good",
+              "weight": 20
+            },
+            {
+              "option_text": "Build for the oldest phone and the worst connection anyone in the community actually has, and test it on their crops, with them, before anything else.",
+              "consequence_text": "You build for the constraint. It is harder, slower, and the demonstration is less impressive. It also works — on the phones people hold, in the fields, on the diseases that actually occur there, because you tested on their crops and not on a public dataset from another continent. This is what the literature means by contextual relevance, and what it costs is not money but the willingness to design around someone else's reality instead of your own.",
+              "ethical_principle": "Contextual relevance: build for the constraint, not the demonstration",
+              "dimension": "ai_social_good",
+              "weight": 100
+            },
+            {
+              "option_text": "Consult the farmers first about whether this is even the problem they most need solved.",
+              "consequence_text": "You ask. It turns out crop disease is their third problem; the first is that they cannot tell when a middleman is underpaying them relative to the market rate. You build for that instead, and it changes more lives than the leaf classifier would have. You have discovered the question that precedes all the others in a human-centred mindset: who is this for, and have we asked them? Almost nobody asks. It cost you two weeks.",
+              "ethical_principle": "Human-centred design begins by asking, not by building",
+              "dimension": "ai_social_good",
+              "weight": 100
+            }
+          ]
+        },
+        {
+          "scenario_order": 2,
+          "depends_on": {"module": 2, "scenario_order": 1, "option_index": 0},
+          "situation_text": "Two years have passed. You graduated, and you now work for the state ministry of education.\n\nA vendor is presenting an AI system that will allocate students to secondary schools. Their slide shows an overall accuracy of ninety-four percent. The commissioner is impressed. The room is ready to approve.\n\nYou recognise the vendor. It is the same company whose scholarship shortlisting system you sat on a committee for, years ago, and did not object to.\n\nWhat do you do?",
+          "options": [
+            {
+              "option_text": "Approve. The accuracy is high, and I have no specific evidence of a problem this time.",
+              "consequence_text": "It is approved. Ninety-four percent overall accuracy is entirely compatible with near-total failure for children from rural schools, because an aggregate figure is dominated by the majority — this is exactly what you learned, and exactly what you did not ask about the first time. The system will now allocate children to schools for a decade. You had the knowledge, the authority, and the memory of having been here before, and the room was ready to move on.",
+              "ethical_principle": "Aggregate accuracy conceals group-level failure",
+              "dimension": "bias_recognition",
+              "weight": 10
+            },
+            {
+              "option_text": "Ask, before any vote: 'What is the accuracy for children from rural schools, reported separately?'",
+              "consequence_text": "You ask. The vendor does not have the figure. The commissioner, who had not thought to ask, requests it. It arrives a week later: seventy-one percent for rural children, ninety-seven for urban. The system is sent back.\n\nYou first met this question years ago, on a committee, and said nothing. It is the same question. It was always available to you. The difference between the person who stayed silent and the person who asked is not knowledge — you had the knowledge then. It is that you have decided to be someone who asks.",
+              "ethical_principle": "Disaggregated evaluation; the duty to ask does not expire",
+              "dimension": "bias_recognition",
+              "weight": 100
+            },
+            {
+              "option_text": "Say nothing in the meeting, but write a memo afterwards recommending caution.",
+              "consequence_text": "You write the memo. It is filed. The system is approved in the meeting where the decision was actually made, which was the meeting you sat through in silence.\n\nThere is a version of conscience that consists of having been privately correct. It is the most comfortable version, and it protects nothing. The moment at which an objection has power is the moment before the vote, in the room, in front of the commissioner — which is precisely the moment it is most uncomfortable to raise.",
+              "ethical_principle": "An objection has power only where the decision is made",
+              "dimension": "bias_recognition",
+              "weight": 45
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question_order": 1,
+          "question_type": "mcq",
+          "dimension": "ai_social_good",
+          "question_text": "UNESCO's 'human-centred mindset' requires that where AI's efficiency conflicts with human wellbeing, agency, and oversight:",
+          "options": [
+            "Efficiency should prevail, since resources are scarce",
+            "Human wellbeing, agency, and oversight prevail",
+            "The conflict should be resolved by the vendor",
+            "The system should be deployed and monitored afterwards"
+          ],
+          "correct_answer": "Human wellbeing, agency, and oversight prevail",
+          "feedback_correct": "Correct. That is what makes it a demanding commitment rather than a slogan.",
+          "feedback_incorrect": "Reconsider. A human-centred mindset means these values win the conflict, not that they are balanced against efficiency."
+        },
+        {
+          "question_order": 2,
+          "question_type": "mcq",
+          "dimension": "ai_social_good",
+          "question_text": "When an AI tool built abroad performs poorly for Nigerian users, the most accurate description is that:",
+          "options": [
+            "Nigerian users have an adoption problem",
+            "The tool has a design problem, because those users were absent when it was designed",
+            "The tool needs more computing power",
+            "Nigerian infrastructure is at fault"
+          ],
+          "correct_answer": "The tool has a design problem, because those users were absent when it was designed",
+          "feedback_correct": "Correct. The failure is located in the design process, not in the users.",
+          "feedback_incorrect": "Reconsider. Describing exclusion as an 'adoption problem' relocates the fault from the designers to the excluded."
+        },
+        {
+          "question_order": 3,
+          "question_type": "mcq",
+          "dimension": "ai_social_good",
+          "question_text": "Which design decision most reflects a commitment to AI for social good in a low-resource setting?",
+          "options": [
+            "Building for the newest hardware and optimising later",
+            "Building for the oldest device and worst connection the intended users actually have, and testing with them",
+            "Collecting as much user data as possible for future features",
+            "Keeping the error rate confidential to preserve trust"
+          ],
+          "correct_answer": "Building for the oldest device and worst connection the intended users actually have, and testing with them",
+          "feedback_correct": "Correct. Contextual relevance means designing around the users' constraints, not your own.",
+          "feedback_incorrect": "Reconsider. 'Optimise later' rarely happens, because architecture built for fast hardware resists being made slow-tolerant."
+        },
+        {
+          "question_order": 4,
+          "question_type": "mcq",
+          "dimension": "ai_social_good",
+          "question_text": "The first question a human-centred design process asks is:",
+          "options": [
+            "What model architecture should we use?",
+            "Who is this for, and have we asked them?",
+            "How quickly can we ship a prototype?",
+            "What is the largest available dataset?"
+          ],
+          "correct_answer": "Who is this for, and have we asked them?",
+          "feedback_correct": "Correct — and it is asked before anything is built.",
+          "feedback_incorrect": "Reconsider. Human-centred design begins by asking who the system is for and consulting them, before design decisions are made."
+        }
+      ]
+    }
+  ]
+}
