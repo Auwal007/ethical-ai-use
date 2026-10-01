@@ -31,11 +31,19 @@ class ScenarioOptionInline(admin.TabularInline):
 
 @admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):
-    list_display = ("sequence_no", "title", "is_published")
+    list_display = ("sequence_no", "title", "page_count", "scenario_count", "is_published")
     list_filter = ("is_published",)
     search_fields = ("title", "summary")
     ordering = ["sequence_no"]
     inlines = [ContentPageInline, ScenarioInline]
+
+    @admin.display(description="Pages")
+    def page_count(self, obj: Module) -> int:
+        return obj.pages.count()
+
+    @admin.display(description="Scenarios")
+    def scenario_count(self, obj: Module) -> int:
+        return obj.scenarios.count()
 
 
 @admin.register(ContentPage)

@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+
+{# Warning banner shown on pre-test / post-test question pages (set by
+   QuestionAdmin.change_view via the parity_warning context var). #}
+{% block content %}
+{% if parity_warning %}
+<ul class="messagelist">
+  <li class="error" style="background:#b8160c;border-radius:4px;">
+    ⚠ {{ parity_warning }}
+  </li>
+</ul>
+{% endif %}
+{{ block.super }}
+{% endblock %}

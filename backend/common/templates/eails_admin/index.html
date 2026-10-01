@@ -1,0 +1,19 @@
+{% extends "admin/index.html" %}
+
+{# Custom-named index template (referenced via EAILSAdminSite.index_template) so
+   it can safely extend the stock admin/index.html without self-reference. Adds a
+   link to the frontend researcher dashboard above the app list. #}
+{% block content %}
+<div class="module" style="margin-bottom:20px;padding:14px 16px;border-left:4px solid #1A5C2A;background:#f4f9f5;">
+  <h2 style="margin:0 0 6px;">Participant Dashboard and Data Export</h2>
+  <p style="margin:0 0 10px;color:#444;">
+    Live participant progress, aggregate statistics, and anonymised CSV downloads
+    for analysis are on the frontend dashboard.
+  </p>
+  <a class="button" href="{{ participant_dashboard_url }}" target="_blank" rel="noopener"
+     style="background:#1A5C2A;color:#fff;padding:8px 14px;border-radius:4px;text-decoration:none;">
+    Open Participant Dashboard &rarr;
+  </a>
+</div>
+{{ block.super }}
+{% endblock %}

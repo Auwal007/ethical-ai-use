@@ -3,14 +3,36 @@ from __future__ import annotations
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
+from django.contrib.auth.models import Group
+
+from assessments.admin import AttemptInline
 
 from .models import ConsentRecord, User
+
+# The researcher does not use Django's permission Groups — hide them.
+try:
+    admin.site.unregister(Group)
+except admin.sites.NotRegistered:
+    pass
+
+
+class ConsentInline(admin.StackedInline):
+    """The participant's consent record, shown inline on their profile."""
+
+    model = ConsentRecord
+    extra = 0
+    can_delete = False
+    readonly_fields = ("consent_version", "agreed_at")
+
+    def has_add_permission(self, request, obj=None) -> bool:
+        return False
 
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     """Email-based user admin (no username field)."""
 
+    inlines = [ConsentInline, AttemptInline]
     ordering = ["-created_at"]
     list_display = (
         "email",

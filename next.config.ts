@@ -1,4 +1,5 @@
 import type {NextConfig} from 'next';
+import path from 'node:path';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -10,6 +11,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   output: 'standalone',
+  outputFileTracingRoot: path.resolve(__dirname),
   transpilePackages: ['motion'],
 };
 

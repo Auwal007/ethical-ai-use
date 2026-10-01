@@ -1,9 +1,16 @@
-"""Admin for per-student progress, choices, dimension scores, and reflections."""
+"""
+Admin for per-student progress and reflections.
+
+ScenarioChoice and DimensionScore are intentionally NOT registered as top-level
+admin entries — they are machine-written analysis data the researcher reads via
+the frontend dashboard / CSV export, not something edited by hand here. Progress
+and Reflection remain, as those are the useful participant-level records.
+"""
 from __future__ import annotations
 
 from django.contrib import admin
 
-from .models import DimensionScore, Progress, Reflection, ScenarioChoice
+from .models import Progress, Reflection
 
 
 @admin.register(Progress)
@@ -12,24 +19,6 @@ class ProgressAdmin(admin.ModelAdmin):
     list_filter = ("status", "module")
     search_fields = ("user__email", "user__full_name", "module__title")
     autocomplete_fields = ("user", "module")
-
-
-@admin.register(ScenarioChoice)
-class ScenarioChoiceAdmin(admin.ModelAdmin):
-    list_display = ("user", "scenario", "selected_option", "chosen_at")
-    list_filter = ("scenario__module", "chosen_at")
-    search_fields = ("user__email", "user__full_name")
-    readonly_fields = ("chosen_at",)
-    autocomplete_fields = ("user", "scenario", "selected_option")
-
-
-@admin.register(DimensionScore)
-class DimensionScoreAdmin(admin.ModelAdmin):
-    list_display = ("user", "dimension", "source", "score", "max_possible", "updated_at")
-    list_filter = ("dimension", "source")
-    search_fields = ("user__email", "user__full_name")
-    readonly_fields = ("updated_at",)
-    autocomplete_fields = ("user",)
 
 
 @admin.register(Reflection)

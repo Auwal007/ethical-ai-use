@@ -32,16 +32,16 @@ export default function HomePage() {
         <svg className="w-full h-full" preserveAspectRatio="xMidYMid slice">
           <defs>
             <pattern id="adire-bg" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-              <rect x="10" y="10" width="10" height="10" fill="var(--green)"/>
-              <rect x="40" y="10" width="10" height="10" fill="var(--green)"/>
-              <rect x="25" y="25" width="10" height="10" fill="var(--gold)"/>
-              <rect x="10" y="40" width="10" height="10" fill="var(--brown)"/>
-              <rect x="40" y="40" width="10" height="10" fill="var(--brown)"/>
-              <line x1="0" y1="0" x2="60" y2="60" stroke="var(--green)" strokeWidth="0.5"/>
-              <line x1="60" y1="0" x2="0" y2="60" stroke="var(--gold)" strokeWidth="0.5"/>
+              <rect x="10" y="10" width="10" height="10" fill="var(--green)" />
+              <rect x="40" y="10" width="10" height="10" fill="var(--green)" />
+              <rect x="25" y="25" width="10" height="10" fill="var(--gold)" />
+              <rect x="10" y="40" width="10" height="10" fill="var(--brown)" />
+              <rect x="40" y="40" width="10" height="10" fill="var(--brown)" />
+              <line x1="0" y1="0" x2="60" y2="60" stroke="var(--green)" strokeWidth="0.5" />
+              <line x1="60" y1="0" x2="0" y2="60" stroke="var(--gold)" strokeWidth="0.5" />
             </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#adire-bg)"/>
+          <rect width="100%" height="100%" fill="url(#adire-bg)" />
         </svg>
       </div>
 
@@ -413,8 +413,7 @@ export default function HomePage() {
                   { label: 'Project Type', value: 'Final Year Project' },
                   { label: 'Academic Session', value: '2025/2026' },
                   { label: 'Student Name', value: 'Muhammad Adam' },
-                  // TODO: replace with the actual supervisor's name before submission.
-                  { label: 'Supervisor', value: '[SUPERVISOR NAME]' }
+                  { label: 'Supervisor', value: 'Dr. Mustapha Maidawa' }
                 ].map((info, i) => (
                   <div key={i} className="border-b pb-4" style={{ borderColor: 'var(--border-subtle)' }}>
                     <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>{info.label}</div>
